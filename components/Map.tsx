@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -124,6 +124,14 @@ const Map = ({ position }: MapProps) => {
     return null;
   };
 
+  // Circle overlay style for selected marker
+  const circleStyle = {
+    fillColor: "#FF1493",
+    fillOpacity: 0.2,
+    color: "#FF1493",
+    weight: 1,
+  };
+
   return (
     <MapContainer
       center={position}
@@ -142,6 +150,15 @@ const Map = ({ position }: MapProps) => {
       {/* Center map on selected marker */}
       {selectedMarker && (
         <MapCenterer position={selectedMarker} zoomLevel={currentZoom} />
+      )}
+
+      {/* Circle overlay for selected marker */}
+      {selectedMarker && currentZoom > initialZoom && (
+        <Circle
+          center={selectedMarker}
+          radius={50}
+          pathOptions={circleStyle}
+        />
       )}
 
       {/* Render all markers */}
