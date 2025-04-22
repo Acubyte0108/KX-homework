@@ -5,8 +5,20 @@ import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import MapMarkerIcon from "./MapMarkerIcon";
 
+// Define marker types
+type MarkerType = "default" | "custom";
+
 interface MapProps {
   position: [number, number];
+  markersType?: MarkerType; // Optional prop to set all markers to the same type
+}
+
+// Extended marker interface
+interface MapMarker {
+  id: number;
+  position: [number, number];
+  name: string;
+  type: MarkerType;
 }
 
 // Component to handle centering the map on a selected position
@@ -31,10 +43,8 @@ const MapCenterer = ({
   return null;
 };
 
-const Map = ({ position }: MapProps) => {
-  const [selectedMarker, setSelectedMarker] = useState<[number, number] | null>(
-    null
-  );
+const Map = ({ position, markersType = "default" }: MapProps) => {
+  const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
   // Initial zoom level and zoomed-in level
   const initialZoom = 14;
   const zoomedInLevel = initialZoom + 3; // 17
@@ -69,32 +79,34 @@ const Map = ({ position }: MapProps) => {
   const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []); // Black color for all markers
   const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []); // Pink color for selected markers
 
-  // Define our marker locations
+  // Define our marker locations - use the markersType prop for all markers
   const markers = useMemo(
     () => [
-      { id: 1, position: position, name: "Main location" },
+      { id: 1, position: position, name: "Main location", type: markersType },
       {
         id: 2,
         position: [position[0] - 0.01, position[1] - 0.01] as [number, number],
         name: "Location A",
+        type: markersType,
       },
       {
         id: 3,
         position: [position[0] - 0.005, position[1] + 0.01] as [number, number],
         name: "Location B",
+        type: markersType,
       },
     ],
-    [position]
+    [position, markersType]
   );
 
   // Handle marker selection and zoom
-  const handleMarkerClick = (markerPosition: [number, number]) => {
+  const handleMarkerClick = (marker: MapMarker) => {
     // If this is first selection or changing from no selection, zoom in
     if (selectedMarker === null) {
       setCurrentZoom(zoomedInLevel);
     }
     // Update selected marker
-    setSelectedMarker(markerPosition);
+    setSelectedMarker(marker);
   };
 
   // Reset zoom when deselecting
@@ -149,13 +161,15 @@ const Map = ({ position }: MapProps) => {
 
       {/* Center map on selected marker */}
       {selectedMarker && (
-        <MapCenterer position={selectedMarker} zoomLevel={currentZoom} />
+        <MapCenterer position={selectedMarker.position} zoomLevel={currentZoom} />
       )}
 
-      {/* Circle overlay for selected marker */}
-      {selectedMarker && currentZoom > initialZoom && (
+      {/* Circle overlay for selected DEFAULT marker only */}
+      {selectedMarker && 
+        selectedMarker.type === "default" && 
+        currentZoom > initialZoom && (
         <Circle
-          center={selectedMarker}
+          center={selectedMarker.position}
           radius={50}
           pathOptions={circleStyle}
         />
@@ -165,9 +179,24 @@ const Map = ({ position }: MapProps) => {
       {markers.map((marker) => {
         const isSelected =
           selectedMarker &&
-          marker.position[0] === selectedMarker[0] &&
-          marker.position[1] === selectedMarker[1];
+          marker.id === selectedMarker.id;
 
+        // For default markers, use Leaflet's default marker
+        if (marker.type === "default") {
+          return (
+            <Marker
+              key={marker.id}
+              position={marker.position}
+              eventHandlers={{
+                click: () => {
+                  handleMarkerClick(marker);
+                },
+              }}
+            ></Marker>
+          );
+        }
+        
+        // For custom markers, use our custom icon
         return (
           <Marker
             key={marker.id}
@@ -175,7 +204,7 @@ const Map = ({ position }: MapProps) => {
             icon={isSelected ? selectedIcon : defaultIcon}
             eventHandlers={{
               click: () => {
-                handleMarkerClick(marker.position);
+                handleMarkerClick(marker);
               },
             }}
           ></Marker>
