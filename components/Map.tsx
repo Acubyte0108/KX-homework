@@ -1,9 +1,9 @@
-"use client";
-
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { renderToStaticMarkup } from 'react-dom/server';
+import MapMarkerIcon from "./MapMarkerIcon";
 
 interface MapProps {
   position: [number, number];
@@ -11,7 +11,7 @@ interface MapProps {
 
 const Map = ({ position }: MapProps) => {
   useEffect(() => {
-    // Fix the missing icon issue
+    // Set up default icon if needed as a fallback
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: "/leaflet/marker-icon.png",
@@ -19,6 +19,23 @@ const Map = ({ position }: MapProps) => {
       shadowUrl: "/leaflet/marker-shadow.png",
     });
   }, []);
+
+  // Create custom icon using our SVG component
+  const createCustomIcon = (color: string) => {
+    const iconMarkup = renderToStaticMarkup(
+      <MapMarkerIcon color={color} size={40} />
+    );
+    
+    return L.divIcon({
+      html: iconMarkup,
+      className: "custom-icon",
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+  };
+
+  const pinkIcon = createCustomIcon("#FF1493"); // Pink color
+  const darkIcon = createCustomIcon("#333333"); // Dark color
 
   return (
     <MapContainer 
@@ -31,9 +48,23 @@ const Map = ({ position }: MapProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={position}>
+      {/* Primary marker with pink icon */}
+      <Marker position={position} icon={pinkIcon}>
         <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
+          Main location
+        </Popup>
+      </Marker>
+      
+      {/* Additional markers with dark icons */}
+      <Marker position={[position[0] - 0.01, position[1] - 0.01]} icon={darkIcon}>
+        <Popup>
+          Location A
+        </Popup>
+      </Marker>
+      
+      <Marker position={[position[0] - 0.005, position[1] + 0.01]} icon={darkIcon}>
+        <Popup>
+          Location B
         </Popup>
       </Marker>
     </MapContainer>
