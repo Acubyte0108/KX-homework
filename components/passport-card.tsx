@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { PassportData, PassportEvent, usePassport } from "./passport-context";
+import { PassportData, PassportEvent } from "./passport-map";
 
 // No local type definitions, using imports instead
 
 interface PassportCardProps {
   passportData: PassportData;
+  selectedEvent: PassportEvent | null;
+  onSelectEvent: (event: PassportEvent) => void;
 }
 
-export default function PassportCard({ passportData }: PassportCardProps) {
-  const { setSelectedEvent } = usePassport();
-  
+export default function PassportCard({ 
+  passportData, 
+  selectedEvent,
+  onSelectEvent 
+}: PassportCardProps) {
   return (
     <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto">
       {/* Partner Header */}
@@ -43,27 +47,32 @@ export default function PassportCard({ passportData }: PassportCardProps) {
       <div className="p-4 flex-1">
         <div className="text-sm font-medium mb-2">{passportData.events.length} spots</div>
         <div className="grid grid-cols-3 gap-2">
-          {passportData.events.map((event) => (
-            <div 
-              key={event.id} 
-              className="relative aspect-square bg-gray-100 rounded-md cursor-pointer hover:opacity-90"
-              onClick={() => setSelectedEvent(event)}
-            >
-              <img
-                src={event.image_url}
-                alt={`Event ${event.id}`}
-                className="absolute inset-0 w-full h-full object-cover rounded-md"
-                onError={(e) => {
-                  // Replace with a fallback on error
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
-                }}
-              />
-              <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm">
-                {event.id}
+          {passportData.events.map((event) => {
+            const isSelected = selectedEvent && event.id === selectedEvent.id;
+            return (
+              <div 
+                key={event.id} 
+                className={`relative aspect-square bg-gray-100 rounded-md cursor-pointer hover:opacity-90 ${
+                  isSelected ? 'ring-2 ring-pink-500' : ''
+                }`}
+                onClick={() => onSelectEvent(event)}
+              >
+                <img
+                  src={event.image_url}
+                  alt={`Event ${event.id}`}
+                  className="absolute inset-0 w-full h-full object-cover rounded-md"
+                  onError={(e) => {
+                    // Replace with a fallback on error
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
+                  }}
+                />
+                <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm">
+                  {event.id}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

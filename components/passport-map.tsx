@@ -1,42 +1,71 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { PassportProvider, usePassport } from "./passport-context";
+import { useState, useEffect } from "react";
 import { DesktopPassportMap } from "./desktop-passport-map";
+
+// Define the passport data types
+type PassportPartner = {
+  display_name: string;
+  profile_image: string;
+};
+
+export type PassportEvent = {
+  id: string;
+  image_url: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+};
+
+export type PassportData = {
+  name: string;
+  description: string;
+  events: PassportEvent[];
+  partner: PassportPartner;
+};
 
 // Define main props for the wrapper
 interface PassportMapProps {
-  defaultPosition: [number, number];
 }
 
-// Inner component that consumes context and renders the appropriate map
-function PassportMapInner({ defaultPosition }: PassportMapProps) {
-  const { passport, loading, error, selectedEvent } = usePassport();
-  // Current position - either from selected event or default
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>(defaultPosition);
-  
-  // Update position when selected event changes
+export function PassportMap() {
+  const [passport, setPassport] = useState<PassportData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(null);
+
+  // Load passport data when component mounts
   useEffect(() => {
-    if (selectedEvent) {
-      setCurrentPosition([selectedEvent.location.lat, selectedEvent.location.lng]);
-    }
-  }, [selectedEvent]);
-  
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading map...</div>;
-  }
-  
-  if (error) {
-    return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
-  }
-  
+    const fetchPassport = async () => {
+      try {
+        const response = await fetch("/passport.json");
+        if (!response.ok) {
+          throw new Error("Failed to fetch passport data");
+        }
+        const data = await response.json();
+        setPassport(data.passport);
+      } catch (error) {
+        console.error("Failed to fetch passport data:", error);
+        setError("Failed to load passport data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPassport();
+  }, []); // Empty dependency array means this runs once on mount
+
   return (
     <>
       {/* Desktop version - hidden on mobile, shown on md screens and up */}
       <div className="hidden md:block">
         <DesktopPassportMap 
-          position={currentPosition} 
-          passportData={passport}
+          passport={passport}
+          loading={loading}
+          error={error}
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
         />
       </div>
       
@@ -45,14 +74,5 @@ function PassportMapInner({ defaultPosition }: PassportMapProps) {
         <div className="p-4 text-center">Mobile version coming soon</div>
       </div>
     </>
-  );
-}
-
-// Main wrapper component that provides context
-export function PassportMap(props: PassportMapProps) {
-  return (
-    <PassportProvider>
-      <PassportMapInner {...props} />
-    </PassportProvider>
   );
 } 

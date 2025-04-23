@@ -4,11 +4,13 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import MapMarkerIcon from "./map-marker-icon";
-import { PassportEvent } from "./passport-context";
+import { PassportEvent } from "./passport-map";
 
 type MapProps = {
   position: [number, number];
   events?: PassportEvent[];
+  selectedEvent?: PassportEvent | null;
+  onSelectEvent?: (event: PassportEvent) => void;
 };
 
 // Extended marker interface
@@ -19,15 +21,22 @@ type MapMarker = {
   event?: PassportEvent;
 };
 
-export default function Map({ position, events = [] }: MapProps) {
-  const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
-  // Initial zoom level and zoomed-in level
+// Define the Map component
+export default function Map({ 
+  position, 
+  events = [], 
+  selectedEvent,
+  onSelectEvent 
+}: MapProps) {
+  // Initial zoom level and zoomed-in level - exactly 17 for zoomed in
   const initialZoom = 14;
-  const zoomedInLevel = initialZoom + 3; // 17
+  const zoomedInLevel = 17;
   // Current zoom level state
   const [currentZoom, setCurrentZoom] = useState(initialZoom);
   // Reference to the map
   const mapRef = useRef<L.Map | null>(null);
+  // Track previous selected event to avoid unnecessary flyTo
+  const prevSelectedEventRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Set up default icon if needed as a fallback
@@ -57,50 +66,51 @@ export default function Map({ position, events = [] }: MapProps) {
   const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []); // Black color for all markers
   const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []); // Pink color for selected markers
 
-  // Define our marker locations - combine default position with events
-  const markers = useMemo(() => {
-    const defaultMarkers: MapMarker[] = [
-      { id: "main", position, name: "Main location" }
-    ];
-    
-    // Add markers from events if available
-    const eventMarkers: MapMarker[] = events.map(event => ({
-      id: event.id,
-      position: [event.location.lat, event.location.lng],
-      name: `Event ${event.id}`,
-      event
-    }));
-    
-    return [...defaultMarkers, ...eventMarkers];
-  }, [position, events]);
-
-  // Handle marker selection and zoom
-  const handleMarkerClick = (marker: MapMarker) => {
-    // If this is first selection or changing from no selection, zoom in
-    if (selectedMarker === null) {
-      setCurrentZoom(zoomedInLevel);
+  // Handle marker click - call onSelectEvent if provided
+  const handleMarkerClick = (event: PassportEvent) => {
+    if (onSelectEvent) {
+      // Call parent's handler to update selectedEvent
+      onSelectEvent(event);
     }
-    // Update selected marker
-    setSelectedMarker(marker);
   };
 
-  // Reset zoom when deselecting
+  // Fly to the selected event position when it changes
   useEffect(() => {
-    if (selectedMarker === null) {
+    if (selectedEvent && mapRef.current) {
+      const currentSelectedId = selectedEvent.id;
+      const wasNothingSelected = prevSelectedEventRef.current === null;
+      
+      // Only fly if the selected event has changed
+      if (prevSelectedEventRef.current !== currentSelectedId) {
+        const map = mapRef.current;
+        
+        // If we're coming from no selection to having a selection,
+        // always zoom to exactly level 17. Otherwise, maintain current zoom.
+        const targetZoom = wasNothingSelected ? zoomedInLevel : map.getZoom();
+        
+        // Set the current zoom level state if we're zooming in
+        if (wasNothingSelected) {
+          setCurrentZoom(zoomedInLevel);
+        }
+        
+        map.flyTo(
+          [selectedEvent.location.lat, selectedEvent.location.lng],
+          targetZoom,
+          {
+            animate: true,
+            duration: 1,
+          }
+        );
+        
+        // Update the ref to track the current selectedEvent
+        prevSelectedEventRef.current = currentSelectedId;
+      }
+    } else if (!selectedEvent) {
+      // Reset when deselected
       setCurrentZoom(initialZoom);
+      prevSelectedEventRef.current = null;
     }
-  }, [selectedMarker, initialZoom]);
-
-  // Center map on selected marker
-  useEffect(() => {
-    if (selectedMarker && mapRef.current) {
-      const map = mapRef.current;
-      map.flyTo(selectedMarker.position, currentZoom, {
-        animate: true,
-        duration: 1,
-      });
-    }
-  }, [selectedMarker, currentZoom]);
+  }, [selectedEvent, initialZoom, zoomedInLevel]);
 
   return (
     <MapContainer
@@ -110,27 +120,26 @@ export default function Map({ position, events = [] }: MapProps) {
       style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
       className="w-full h-full"
+      key="map-container" // Adding a stable key to help React identify this component
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Render all markers */}
-      {markers.map((marker) => {
-        const isSelected = selectedMarker && marker.id === selectedMarker.id;
-
+      {/* Render markers from events */}
+      {events.map((event) => {
+        const isSelected = selectedEvent && event.id === selectedEvent.id;
+        
         return (
           <Marker
-            key={marker.id}
-            position={marker.position}
+            key={event.id}
+            position={[event.location.lat, event.location.lng]}
             icon={isSelected ? selectedIcon : defaultIcon}
             eventHandlers={{
-              click: () => {
-                handleMarkerClick(marker);
-              },
+              click: () => handleMarkerClick(event),
             }}
-          ></Marker>
+          />
         );
       })}
     </MapContainer>
