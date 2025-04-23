@@ -7,14 +7,14 @@ import MapMarkerIcon from "./map-marker-icon";
 import { PassportEvent } from "./passport-map";
 
 type MapProps = {
-  position: [number, number];
+  defaultPosition: L.LatLngExpression;
   events?: PassportEvent[];
   selectedEvent?: PassportEvent | null;
   onSelectEvent?: (event: PassportEvent) => void;
 };
 
 export default function Map({
-  position,
+  defaultPosition,
   events = [],
   selectedEvent,
   onSelectEvent,
@@ -83,18 +83,25 @@ export default function Map({
         // Update the ref to track the current selectedEvent
         prevSelectedEventIdRef.current = currentSelectedId;
       }
-    } else if (!selectedEvent) {
-      // Reset when deselected
+    } else if (!selectedEvent && prevSelectedEventIdRef.current !== null) {
+      // Reset when deselected - fly back to default position and reset zoom
       if (mapRef.current) {
-        mapRef.current.setZoom(initialZoom);
+        mapRef.current.flyTo(
+          defaultPosition,
+          initialZoom,
+          {
+            animate: true,
+            duration: 1,
+          }
+        );
       }
       prevSelectedEventIdRef.current = null;
     }
-  }, [selectedEvent]);
+  }, [selectedEvent, defaultPosition]);
 
   return (
     <MapContainer
-      center={position}
+      center={defaultPosition}
       zoom={initialZoom}
       scrollWheelZoom={true}
       style={{ height: "100vh", width: "100%" }}

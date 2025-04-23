@@ -2,8 +2,8 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import PassportCard from "./passport-card";
-import { PassportData, PassportEvent } from "./passport-map";
+import PassportCard from "@/components/passport-card";
+import { PassportData, PassportEvent } from "@/components/passport-map";
 
 // Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
@@ -32,20 +32,15 @@ export function DesktopPassportMap({
   
   const [currentPosition, setCurrentPosition] = useState<[number, number]>(defaultPosition);
   
-  // Set initial position from first event if available
+  // Set map position based on selected event or first available event
   useEffect(() => {
-    if (passport && passport.events && passport.events.length > 0 && !selectedEvent) {
+    if (selectedEvent) {
+      setCurrentPosition([selectedEvent.location.lat, selectedEvent.location.lng]);
+    } else if (passport && passport.events && passport.events.length > 0) {
       const firstEvent = passport.events[0];
       setCurrentPosition([firstEvent.location.lat, firstEvent.location.lng]);
     }
   }, [passport, selectedEvent]);
-
-  // Update position when selected event changes
-  useEffect(() => {
-    if (selectedEvent) {
-      setCurrentPosition([selectedEvent.location.lat, selectedEvent.location.lng]);
-    }
-  }, [selectedEvent]);
   
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading map...</div>;
@@ -60,7 +55,7 @@ export function DesktopPassportMap({
       {/* Left side: Map (4/5 of screen) */}
       <div className="w-4/5 h-screen">
         <MapWithNoSSR 
-          position={currentPosition} 
+          defaultPosition={currentPosition} 
           events={passport?.events || []} 
           selectedEvent={selectedEvent}
           onSelectEvent={setSelectedEvent}
