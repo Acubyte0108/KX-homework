@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
-import PassportCard from "@/components/PassportCard";
+import PassportCard from "@/components/passport-card";
 
 interface DesktopPassportLayoutProps {
   position: [number, number];
@@ -14,7 +14,7 @@ export default function DesktopPassportLayout({
   children
 }: DesktopPassportLayoutProps) {
   // Import Map with no SSR
-  const MapWithNoSSR = dynamic(() => import("@/components/Map"), {
+  const MapWithNoSSR = dynamic(() => import("@/components/map"), {
     ssr: false,
   });
 

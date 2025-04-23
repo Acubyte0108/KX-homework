@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import MapMarkerIcon from "./MapMarkerIcon";
+import MapMarkerIcon from "./map-marker-icon";
 
 type MapProps = {
   position: [number, number];
