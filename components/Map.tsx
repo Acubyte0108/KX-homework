@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, useMap, Circle } from "react-leaflet";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -21,28 +21,6 @@ interface MapMarker {
   type: MarkerType;
 }
 
-// Component to handle centering the map on a selected position
-const MapCenterer = ({
-  position,
-  zoomLevel,
-}: {
-  position: [number, number] | null;
-  zoomLevel: number;
-}) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (position) {
-      map.flyTo(position, zoomLevel, {
-        animate: true,
-        duration: 1,
-      });
-    }
-  }, [map, position, zoomLevel]);
-
-  return null;
-};
-
 const Map = ({ position, markersType = "default" }: MapProps) => {
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
   // Initial zoom level and zoomed-in level
@@ -50,6 +28,8 @@ const Map = ({ position, markersType = "default" }: MapProps) => {
   const zoomedInLevel = initialZoom + 3; // 17
   // Current zoom level state
   const [currentZoom, setCurrentZoom] = useState(initialZoom);
+  // Reference to the map
+  const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     // Set up default icon if needed as a fallback
@@ -116,11 +96,22 @@ const Map = ({ position, markersType = "default" }: MapProps) => {
     }
   }, [selectedMarker, initialZoom]);
 
-  // Custom component to handle map events
-  const MapEvents = () => {
-    const map = useMap();
+  // Center map on selected marker
+  useEffect(() => {
+    if (selectedMarker && mapRef.current) {
+      const map = mapRef.current;
+      map.flyTo(selectedMarker.position, currentZoom, {
+        animate: true,
+        duration: 1,
+      });
+    }
+  }, [selectedMarker, currentZoom]);
 
-    useEffect(() => {
+  // Custom effect to handle map events
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current;
+      
       // Listen for zoom end and update current zoom
       const handleZoomEnd = () => {
         console.log("Zoom changed to:", map.getZoom());
@@ -131,10 +122,8 @@ const Map = ({ position, markersType = "default" }: MapProps) => {
       return () => {
         map.off("zoomend", handleZoomEnd);
       };
-    }, [map]);
-
-    return null;
-  };
+    }
+  }, [mapRef.current]);
 
   // Circle overlay style for selected marker
   const circleStyle = {
@@ -151,19 +140,12 @@ const Map = ({ position, markersType = "default" }: MapProps) => {
       scrollWheelZoom={false}
     //   zoomControl={false}
       style={{ height: "400px", width: "100%" }}
+      ref={mapRef}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
-      {/* Debug component */}
-      <MapEvents />
-
-      {/* Center map on selected marker */}
-      {selectedMarker && (
-        <MapCenterer position={selectedMarker.position} zoomLevel={currentZoom} />
-      )}
 
       {/* Circle overlay for selected DEFAULT marker only */}
       {selectedMarker && 
