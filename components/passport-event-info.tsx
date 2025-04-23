@@ -8,7 +8,7 @@ const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
 });
 
-interface PassportEventInfoProps {
+type PassportEventInfoProps = {
   selectedEvent: PassportEvent;
   defaultPosition: L.LatLngExpression;
   onClose: () => void;
@@ -43,12 +43,12 @@ export default function PassportEventInfo({
             src={selectedEvent.image_url} 
             alt={`Event ${selectedEvent.id}`} 
             fill
-            sizes="(max-width: 400px) 100vw, 400px"
-            className="object-cover rounded-md"
+            sizes="100px"
+            className="object-cover rounded-md w-full h-full"
             onError={(e) => {
               // Replace with a fallback on error
               const target = e.target as HTMLImageElement;
-              target.src = `https://placehold.co/400x200?text=Event+${selectedEvent.id}`;
+              target.src = `https://placehold.co/200x200?text=Event+${selectedEvent.id}`;
             }}
           />
         </div>

@@ -14,7 +14,7 @@ export default function PassportCard({
 }: PassportCardProps) {
 
   return (
-    <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto">
+    <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto w-full">
       {/* Partner Header */}
       <div className="p-4 border-b border-sidebar-border flex items-center gap-2">
         <div className="h-8 w-8 rounded-full overflow-hidden relative">
@@ -63,8 +63,8 @@ export default function PassportCard({
                     src={event.image_url}
                     alt={`Event ${event.id}`}
                     fill
-                    sizes="(max-width: 768px) 33vw, 100px"
-                    className="object-cover rounded-md"
+                    sizes="100px"
+                    className="object-cover rounded-md w-full h-full"
                     onError={(e) => {
                       // Replace with a fallback on error
                       const target = e.target as HTMLImageElement;

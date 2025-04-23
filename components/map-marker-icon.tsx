@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface MapMarkerIconProps {
+type MapMarkerIconProps = {
   color?: string;
   size?: number;
   className?: string;
