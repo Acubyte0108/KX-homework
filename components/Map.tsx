@@ -13,21 +13,21 @@ type MapProps = {
   onSelectEvent?: (event: PassportEvent) => void;
 };
 
-export default function Map({ 
-  position, 
-  events = [], 
+export default function Map({
+  position,
+  events = [],
   selectedEvent,
-  onSelectEvent 
+  onSelectEvent,
 }: MapProps) {
   // Zoom level constants
   const initialZoom = 14;
   const zoomedInLevel = 17;
-  
+
   // Map reference
   const mapRef = useRef<L.Map | null>(null);
-  
+
   // Track previous selected event to avoid unnecessary flyTo
-  const prevSelectedEventRef = useRef<string | null>(null);
+  const prevSelectedEventIdRef = useRef<string | null>(null);
 
   // Set up Leaflet default icons
   useEffect(() => {
@@ -68,9 +68,9 @@ export default function Map({
   useEffect(() => {
     if (selectedEvent && mapRef.current) {
       const currentSelectedId = selectedEvent.id;
-      
+
       // Only fly if the selected event has changed
-      if (prevSelectedEventRef.current !== currentSelectedId) {
+      if (prevSelectedEventIdRef.current !== currentSelectedId) {
         mapRef.current.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
           zoomedInLevel,
@@ -79,18 +79,18 @@ export default function Map({
             duration: 1,
           }
         );
-        
+
         // Update the ref to track the current selectedEvent
-        prevSelectedEventRef.current = currentSelectedId;
+        prevSelectedEventIdRef.current = currentSelectedId;
       }
     } else if (!selectedEvent) {
       // Reset when deselected
       if (mapRef.current) {
         mapRef.current.setZoom(initialZoom);
       }
-      prevSelectedEventRef.current = null;
+      prevSelectedEventIdRef.current = null;
     }
-  }, [selectedEvent, initialZoom, zoomedInLevel]);
+  }, [selectedEvent]);
 
   return (
     <MapContainer
@@ -109,7 +109,7 @@ export default function Map({
 
       {events.map((event) => {
         const isSelected = selectedEvent && event.id === selectedEvent.id;
-        
+
         return (
           <Marker
             key={event.id}
