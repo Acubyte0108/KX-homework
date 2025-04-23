@@ -1,22 +1,25 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import MapMarkerIcon from "./map-marker-icon";
+import { PassportEvent } from "./passport-context";
 
 type MapProps = {
   position: [number, number];
+  events?: PassportEvent[];
 };
 
 // Extended marker interface
 type MapMarker = {
-  id: number;
+  id: string;
   position: L.LatLngExpression;
   name: string;
+  event?: PassportEvent;
 };
 
-export default function Map({ position }: MapProps) {
+export default function Map({ position, events = [] }: MapProps) {
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
   // Initial zoom level and zoomed-in level
   const initialZoom = 14;
@@ -54,23 +57,22 @@ export default function Map({ position }: MapProps) {
   const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []); // Black color for all markers
   const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []); // Pink color for selected markers
 
-  // Define our marker locations - all markers are custom now
-  const markers = useMemo(
-    () => [
-      { id: 1, position: position, name: "Main location" },
-      {
-        id: 2,
-        position: [position[0] - 0.01, position[1] - 0.01] as [number, number],
-        name: "Location A",
-      },
-      {
-        id: 3,
-        position: [position[0] - 0.005, position[1] + 0.01] as [number, number],
-        name: "Location B",
-      },
-    ],
-    [position]
-  );
+  // Define our marker locations - combine default position with events
+  const markers = useMemo(() => {
+    const defaultMarkers: MapMarker[] = [
+      { id: "main", position, name: "Main location" }
+    ];
+    
+    // Add markers from events if available
+    const eventMarkers: MapMarker[] = events.map(event => ({
+      id: event.id,
+      position: [event.location.lat, event.location.lng],
+      name: `Event ${event.id}`,
+      event
+    }));
+    
+    return [...defaultMarkers, ...eventMarkers];
+  }, [position, events]);
 
   // Handle marker selection and zoom
   const handleMarkerClick = (marker: MapMarker) => {
