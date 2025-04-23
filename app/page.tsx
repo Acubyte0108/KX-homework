@@ -1,14 +1,7 @@
-"use client";
-
-import dynamic from "next/dynamic";
+import DesktopPassportLayout from "@/components/desktop-passport-layout";
 
 export default function Home() {
   const position: [number, number] = [13.7407531, 100.5246708];
   
-  const DesktopPassportLayoutWithNoSSR = dynamic(
-    () => import("@/components/desktop-passport-layout"),
-    { ssr: false }
-  );
-
-  return <DesktopPassportLayoutWithNoSSR position={position} />;
+  return <DesktopPassportLayout position={position} />;
 }
