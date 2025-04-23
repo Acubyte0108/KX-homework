@@ -149,6 +149,7 @@ const Map = ({ position, markersType = "default" }: MapProps) => {
       center={position}
       zoom={initialZoom}
       scrollWheelZoom={false}
+    //   zoomControl={false}
       style={{ height: "400px", width: "100%" }}
     >
       <TileLayer
