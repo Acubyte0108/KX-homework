@@ -13,31 +13,24 @@ type MapProps = {
   onSelectEvent?: (event: PassportEvent) => void;
 };
 
-// Extended marker interface
-type MapMarker = {
-  id: string;
-  position: L.LatLngExpression;
-  name: string;
-  event?: PassportEvent;
-};
-
-// Define the Map component
 export default function Map({ 
   position, 
   events = [], 
   selectedEvent,
   onSelectEvent 
 }: MapProps) {
-  // Initial zoom level and zoomed-in level - exactly 17 for zoomed in
+  // Zoom level constants
   const initialZoom = 14;
   const zoomedInLevel = 17;
-  // Reference to the map
+  
+  // Map reference
   const mapRef = useRef<L.Map | null>(null);
+  
   // Track previous selected event to avoid unnecessary flyTo
   const prevSelectedEventRef = useRef<string | null>(null);
 
+  // Set up Leaflet default icons
   useEffect(() => {
-    // Set up default icon if needed as a fallback
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: "/leaflet/marker-icon.png",
@@ -46,7 +39,7 @@ export default function Map({
     });
   }, []);
 
-  // Create custom icon using our SVG component
+  // Create custom icon using SVG component
   const createCustomIcon = (color: string, size: number = 40) => {
     const iconMarkup = renderToStaticMarkup(
       <MapMarkerIcon color={color} size={size} />
@@ -60,29 +53,25 @@ export default function Map({
     });
   };
 
-  // Memoize icons to avoid recreating them on every render
-  const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []); // Black color for all markers
-  const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []); // Pink color for selected markers
+  // Memoize icons
+  const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []);
+  const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []);
 
-  // Handle marker click - call onSelectEvent if provided
+  // Handle marker click
   const handleMarkerClick = (event: PassportEvent) => {
     if (onSelectEvent) {
-      // Call parent's handler to update selectedEvent
       onSelectEvent(event);
     }
   };
 
-  // Fly to the selected event position when it changes
+  // Handle selected event changes
   useEffect(() => {
     if (selectedEvent && mapRef.current) {
       const currentSelectedId = selectedEvent.id;
       
       // Only fly if the selected event has changed
       if (prevSelectedEventRef.current !== currentSelectedId) {
-        const map = mapRef.current;
-        
-        // Always zoom to level 17 whenever selectedEvent changes
-        map.flyTo(
+        mapRef.current.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
           zoomedInLevel,
           {
@@ -111,14 +100,13 @@ export default function Map({
       style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
       className="w-full h-full"
-      key="map-container" // Adding a stable key to help React identify this component
+      key="map-container"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Render markers from events */}
       {events.map((event) => {
         const isSelected = selectedEvent && event.id === selectedEvent.id;
         
