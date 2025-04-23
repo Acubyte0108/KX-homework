@@ -31,8 +31,6 @@ export default function Map({
   // Initial zoom level and zoomed-in level - exactly 17 for zoomed in
   const initialZoom = 14;
   const zoomedInLevel = 17;
-  // Current zoom level state
-  const [currentZoom, setCurrentZoom] = useState(initialZoom);
   // Reference to the map
   const mapRef = useRef<L.Map | null>(null);
   // Track previous selected event to avoid unnecessary flyTo
@@ -78,24 +76,15 @@ export default function Map({
   useEffect(() => {
     if (selectedEvent && mapRef.current) {
       const currentSelectedId = selectedEvent.id;
-      const wasNothingSelected = prevSelectedEventRef.current === null;
       
       // Only fly if the selected event has changed
       if (prevSelectedEventRef.current !== currentSelectedId) {
         const map = mapRef.current;
         
-        // If we're coming from no selection to having a selection,
-        // always zoom to exactly level 17. Otherwise, maintain current zoom.
-        const targetZoom = wasNothingSelected ? zoomedInLevel : map.getZoom();
-        
-        // Set the current zoom level state if we're zooming in
-        if (wasNothingSelected) {
-          setCurrentZoom(zoomedInLevel);
-        }
-        
+        // Always zoom to level 17 whenever selectedEvent changes
         map.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
-          targetZoom,
+          zoomedInLevel,
           {
             animate: true,
             duration: 1,
@@ -107,7 +96,9 @@ export default function Map({
       }
     } else if (!selectedEvent) {
       // Reset when deselected
-      setCurrentZoom(initialZoom);
+      if (mapRef.current) {
+        mapRef.current.setZoom(initialZoom);
+      }
       prevSelectedEventRef.current = null;
     }
   }, [selectedEvent, initialZoom, zoomedInLevel]);
@@ -116,7 +107,7 @@ export default function Map({
     <MapContainer
       center={position}
       zoom={initialZoom}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
       style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
       className="w-full h-full"
