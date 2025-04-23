@@ -29,19 +29,17 @@ export function DesktopPassportMap({
   setSelectedEvent
 }: DesktopPassportMapProps) {
   // Default position for Bangkok - will be used initially
-  const defaultPosition: [number, number] = [13.7563, 100.5018];
+  const bangkokPosition: [number, number] = [13.7563, 100.5018];
   
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>(defaultPosition);
+  const [defaultPosition, setDefaultPosition] = useState<[number, number]>(bangkokPosition);
   
-  // Set map position based on selected event or first available event
+  // Set map position based on first available event
   useEffect(() => {
-    if (selectedEvent) {
-      setCurrentPosition([selectedEvent.location.lat, selectedEvent.location.lng]);
-    } else if (passport && passport.events && passport.events.length > 0) {
+    if (passport && passport.events && passport.events.length > 0) {
       const firstEvent = passport.events[0];
-      setCurrentPosition([firstEvent.location.lat, firstEvent.location.lng]);
+      setDefaultPosition([firstEvent.location.lat, firstEvent.location.lng]);
     }
-  }, [passport, selectedEvent]);
+  }, [passport]);
   
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading map...</div>;
@@ -56,7 +54,7 @@ export function DesktopPassportMap({
       {/* Left side: Map (4/5 of screen) */}
       <div className="w-4/5 h-screen">
         <MapWithNoSSR 
-          defaultPosition={currentPosition} 
+          defaultPosition={defaultPosition} 
           events={passport?.events || []} 
           selectedEvent={selectedEvent}
           onSelectEvent={setSelectedEvent}
