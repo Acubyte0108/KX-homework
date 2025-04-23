@@ -66,6 +66,7 @@ export default function MiniMap({
     <MapContainer
       center={selectedPosition || defaultPosition}
       zoom={selectedPosition ? maxZoomLevel : defaultZoomLevel}
+      zoomControl={false}
       scrollWheelZoom={false}
       style={{ height: "300px", width: "100%" }}
       ref={mapRef}

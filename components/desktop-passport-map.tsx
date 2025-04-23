@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import PassportCard from "@/components/passport-card";
 import { PassportData, PassportEvent } from "@/components/passport-map";
+import PassportEventInfo from "@/components/passport-event-info";
 
 // Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
@@ -51,7 +52,7 @@ export function DesktopPassportMap({
   }
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full relative">
       {/* Left side: Map (4/5 of screen) */}
       <div className="w-4/5 h-screen">
         <MapWithNoSSR 
@@ -66,13 +67,21 @@ export function DesktopPassportMap({
       <div className="w-1/5 h-screen border-l border-sidebar-border bg-sidebar overflow-auto">
         {passport && (
           <PassportCard 
-            defaultPosition={currentPosition}
             passportData={passport} 
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
           />
         )}
       </div>
+
+      {/* Floating event info that appears when an event is selected */}
+      {selectedEvent && (
+        <PassportEventInfo 
+          selectedEvent={selectedEvent}
+          defaultPosition={defaultPosition}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
 
       {/* Additional content if needed */}
       {children && <div className="absolute">{children}</div>}

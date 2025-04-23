@@ -103,6 +103,7 @@ export default function Map({
     <MapContainer
       center={defaultPosition}
       zoom={initialZoom}
+      zoomControl={false}
       scrollWheelZoom={true}
       style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
