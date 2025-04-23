@@ -1,19 +1,30 @@
 import { useState } from "react";
 import { PassportData, PassportEvent } from "./passport-map";
+import L from "leaflet";
+import dynamic from "next/dynamic";
 
-// No local type definitions, using imports instead
+// Dynamically import MiniMap with no SSR
+const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
+  ssr: false,
+});
 
 interface PassportCardProps {
+  defaultPosition: L.LatLngExpression;
   passportData: PassportData;
   selectedEvent: PassportEvent | null;
   onSelectEvent: (event: PassportEvent) => void;
 }
 
 export default function PassportCard({ 
+  defaultPosition,
   passportData, 
   selectedEvent,
   onSelectEvent 
 }: PassportCardProps) {
+
+  const currentEventPosition = selectedEvent 
+    ? [selectedEvent.location.lat, selectedEvent.location.lng] 
+    : defaultPosition;
   return (
     <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto">
       {/* Partner Header */}
@@ -74,6 +85,12 @@ export default function PassportCard({
             );
           })}
         </div>
+      </div>
+
+      {/* Mini Map */}
+      <div className="p-4 border-t border-sidebar-border">
+        <div className="text-sm font-medium mb-2">Location</div>
+        <MiniMapWithNoSSR position={currentEventPosition as L.LatLngExpression} />
       </div>
     </div>
   );

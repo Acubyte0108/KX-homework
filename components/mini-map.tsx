@@ -4,11 +4,11 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 type MiniMapProps = {
-  position?: [number, number]; // Optional as it might be null initially
+  position?: L.LatLngExpression; // Optional as it might be null initially
 };
 
 export default function MiniMap({ position }: MiniMapProps) {
-  const defaultZoom = 15;
+  const defaultZoom = 18;
   const mapRef = useRef<L.Map | null>(null);
   const [isFirstPosition, setIsFirstPosition] = useState(true);
 

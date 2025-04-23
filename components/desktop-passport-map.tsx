@@ -66,6 +66,7 @@ export function DesktopPassportMap({
       <div className="w-1/5 h-screen border-l border-sidebar-border bg-sidebar overflow-auto">
         {passport && (
           <PassportCard 
+            defaultPosition={currentPosition}
             passportData={passport} 
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
