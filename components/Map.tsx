@@ -16,7 +16,7 @@ type MapMarker = {
   name: string;
 };
 
-const Map = ({ position }: MapProps) => {
+export default function Map({ position }: MapProps) {
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
   // Initial zoom level and zoomed-in level
   const initialZoom = 14;
@@ -105,9 +105,9 @@ const Map = ({ position }: MapProps) => {
       center={position}
       zoom={initialZoom}
       scrollWheelZoom={false}
-      //   zoomControl={false}
-      style={{ height: "400px", width: "100%" }}
+      style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
+      className="w-full h-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -133,6 +133,4 @@ const Map = ({ position }: MapProps) => {
       })}
     </MapContainer>
   );
-};
-
-export default Map;
+}

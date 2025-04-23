@@ -3,11 +3,11 @@ import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-interface MiniMapProps {
+type MiniMapProps = {
   position?: [number, number]; // Optional as it might be null initially
-}
+};
 
-const MiniMap = ({ position }: MiniMapProps) => {
+export default function MiniMap({ position }: MiniMapProps) {
   const defaultZoom = 15;
   const mapRef = useRef<L.Map | null>(null);
   const [isFirstPosition, setIsFirstPosition] = useState(true);
@@ -26,16 +26,16 @@ const MiniMap = ({ position }: MiniMapProps) => {
   useEffect(() => {
     if (position && mapRef.current) {
       const map = mapRef.current;
-      
+
       // If this is the first position, use the default zoom
       // Otherwise maintain the current zoom level
       const zoom = isFirstPosition ? defaultZoom : map.getZoom();
-      
+
       map.flyTo(position, zoom, {
         animate: true,
         duration: 1,
       });
-      
+
       // After first position is set, mark that we've had a position
       if (isFirstPosition) {
         setIsFirstPosition(false);
@@ -68,15 +68,9 @@ const MiniMap = ({ position }: MiniMapProps) => {
       {position && (
         <>
           <Marker position={position} />
-          <Circle
-            center={position}
-            radius={50}
-            pathOptions={circleStyle}
-          />
+          <Circle center={position} radius={50} pathOptions={circleStyle} />
         </>
       )}
     </MapContainer>
   );
-};
-
-export default MiniMap; 
+}
