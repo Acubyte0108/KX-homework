@@ -1,15 +1,13 @@
 import { PassportData, PassportEvent } from "./passport-map";
-import L from "leaflet";
+import Image from "next/image";
 
-interface PassportCardProps {
-  defaultPosition: L.LatLngExpression;
+type PassportCardProps = {
   passportData: PassportData;
   selectedEvent: PassportEvent | null;
   onSelectEvent: (event: PassportEvent) => void;
-}
+};
 
 export default function PassportCard({ 
-  defaultPosition,
   passportData, 
   selectedEvent,
   onSelectEvent 
@@ -19,12 +17,14 @@ export default function PassportCard({
     <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto">
       {/* Partner Header */}
       <div className="p-4 border-b border-sidebar-border flex items-center gap-2">
-        <div className="h-8 w-8 rounded-full overflow-hidden">
+        <div className="h-8 w-8 rounded-full overflow-hidden relative">
           {passportData.partner.profile_image && (
-            <img
+            <Image
               src={passportData.partner.profile_image}
               alt={passportData.partner.display_name}
-              className="w-full h-full object-cover"
+              fill
+              sizes="32px"
+              className="object-cover"
               onError={(e) => {
                 // Replace with a fallback on error
                 const target = e.target as HTMLImageElement;
@@ -58,17 +58,21 @@ export default function PassportCard({
                 }`}
                 onClick={() => onSelectEvent(event)}
               >
-                <img
-                  src={event.image_url}
-                  alt={`Event ${event.id}`}
-                  className="absolute inset-0 w-full h-full object-cover rounded-md"
-                  onError={(e) => {
-                    // Replace with a fallback on error
-                    const target = e.target as HTMLImageElement;
-                    target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
-                  }}
-                />
-                <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={event.image_url}
+                    alt={`Event ${event.id}`}
+                    fill
+                    sizes="(max-width: 768px) 33vw, 100px"
+                    className="object-cover rounded-md"
+                    onError={(e) => {
+                      // Replace with a fallback on error
+                      const target = e.target as HTMLImageElement;
+                      target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
+                    }}
+                  />
+                </div>
+                <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm z-10">
                   {event.id}
                 </div>
               </div>

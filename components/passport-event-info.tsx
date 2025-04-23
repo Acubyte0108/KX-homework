@@ -1,6 +1,7 @@
 import { PassportEvent } from "./passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 // Dynamically import MiniMap with no SSR
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
@@ -37,16 +38,20 @@ export default function PassportEventInfo({
       </div>
       
       <div className="mb-3">
-        <img 
-          src={selectedEvent.image_url} 
-          alt={`Event ${selectedEvent.id}`} 
-          className="w-full h-40 object-cover rounded-md"
-          onError={(e) => {
-            // Replace with a fallback on error
-            const target = e.target as HTMLImageElement;
-            target.src = `https://placehold.co/400x200?text=Event+${selectedEvent.id}`;
-          }}
-        />
+        <div className="relative w-full h-40">
+          <Image 
+            src={selectedEvent.image_url} 
+            alt={`Event ${selectedEvent.id}`} 
+            fill
+            sizes="(max-width: 400px) 100vw, 400px"
+            className="object-cover rounded-md"
+            onError={(e) => {
+              // Replace with a fallback on error
+              const target = e.target as HTMLImageElement;
+              target.src = `https://placehold.co/400x200?text=Event+${selectedEvent.id}`;
+            }}
+          />
+        </div>
       </div>
       
       <div className="mb-3 text-xs text-gray-500">
