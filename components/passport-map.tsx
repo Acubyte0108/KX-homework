@@ -26,15 +26,15 @@ export type PassportData = {
 };
 
 // Define main props for the wrapper
-interface PassportMapProps {
-}
+interface PassportMapProps {}
 
 export function PassportMap() {
   const [passport, setPassport] = useState<PassportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(null);
-
+  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
+    null
+  );
   // Load passport data when component mounts
   useEffect(() => {
     const fetchPassport = async () => {
@@ -60,7 +60,7 @@ export function PassportMap() {
     <>
       {/* Desktop version - hidden on mobile, shown on md screens and up */}
       <div className="hidden md:block">
-        <DesktopPassportMap 
+        <DesktopPassportMap
           passport={passport}
           loading={loading}
           error={error}
@@ -68,11 +68,11 @@ export function PassportMap() {
           setSelectedEvent={setSelectedEvent}
         />
       </div>
-      
+
       {/* Mobile version - shown on mobile, hidden on md screens and up */}
       <div className="block md:hidden">
         <div className="p-4 text-center">Mobile version coming soon</div>
       </div>
     </>
   );
-} 
+}

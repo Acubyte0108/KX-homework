@@ -4,13 +4,18 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 type MiniMapProps = {
-  position?: L.LatLngExpression; // Optional as it might be null initially
+  defaultPosition: L.LatLngExpression;
+  selectedPosition?: L.LatLngExpression; // Optional selected position
 };
 
-export default function MiniMap({ position }: MiniMapProps) {
-  const defaultZoom = 18;
+export default function MiniMap({
+  defaultPosition,
+  selectedPosition,
+}: MiniMapProps) {
+  const defaultZoomLevel = 14;
+  const maxZoomLevel = 18;
   const mapRef = useRef<L.Map | null>(null);
-  const [isFirstPosition, setIsFirstPosition] = useState(true);
+  const [hasSelectedBefore, setHasSelectedBefore] = useState(false);
 
   useEffect(() => {
     // Set up default icon
@@ -24,24 +29,30 @@ export default function MiniMap({ position }: MiniMapProps) {
 
   // Handle position changes
   useEffect(() => {
-    if (position && mapRef.current) {
-      const map = mapRef.current;
+    if (!mapRef.current) return;
 
-      // If this is the first position, use the default zoom
-      // Otherwise maintain the current zoom level
-      const zoom = isFirstPosition ? defaultZoom : map.getZoom();
+    const map = mapRef.current;
 
-      map.flyTo(position, zoom, {
+    if (selectedPosition) {
+      // Zoom to selected position with max zoom level
+      map.flyTo(selectedPosition, maxZoomLevel, {
         animate: true,
         duration: 1,
       });
 
-      // After first position is set, mark that we've had a position
-      if (isFirstPosition) {
-        setIsFirstPosition(false);
+      // Track that we've had a selection before
+      if (!hasSelectedBefore) {
+        setHasSelectedBefore(true);
       }
+    } else if (hasSelectedBefore) {
+      // If we previously had a selection but now don't,
+      // fly back to default position with default zoom
+      map.flyTo(defaultPosition, defaultZoomLevel, {
+        animate: true,
+        duration: 1,
+      });
     }
-  }, [position, isFirstPosition, defaultZoom]);
+  }, [selectedPosition, defaultPosition, hasSelectedBefore]);
 
   // Circle overlay style
   const circleStyle = {
@@ -53,8 +64,8 @@ export default function MiniMap({ position }: MiniMapProps) {
 
   return (
     <MapContainer
-      center={position || [51.505, -0.09]} // Default position if none provided
-      zoom={defaultZoom}
+      center={selectedPosition || defaultPosition}
+      zoom={selectedPosition ? maxZoomLevel : defaultZoomLevel}
       scrollWheelZoom={false}
       style={{ height: "300px", width: "100%" }}
       ref={mapRef}
@@ -64,11 +75,15 @@ export default function MiniMap({ position }: MiniMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Marker and circle */}
-      {position && (
+      {/* Only show marker and circle when selectedPosition exists */}
+      {selectedPosition && (
         <>
-          <Marker position={position} />
-          <Circle center={position} radius={50} pathOptions={circleStyle} />
+          <Marker position={selectedPosition} />
+          <Circle
+            center={selectedPosition}
+            radius={50}
+            pathOptions={circleStyle}
+          />
         </>
       )}
     </MapContainer>

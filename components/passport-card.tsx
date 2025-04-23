@@ -90,7 +90,10 @@ export default function PassportCard({
       {/* Mini Map */}
       <div className="p-4 border-t border-sidebar-border">
         <div className="text-sm font-medium mb-2">Location</div>
-        <MiniMapWithNoSSR position={currentEventPosition as L.LatLngExpression} />
+        <MiniMapWithNoSSR 
+          defaultPosition={defaultPosition} 
+          selectedPosition={selectedEvent ? [selectedEvent.location.lat, selectedEvent.location.lng] : undefined} 
+        />
       </div>
     </div>
   );
