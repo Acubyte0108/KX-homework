@@ -13,8 +13,6 @@ const MapWithNoSSR = dynamic(() => import("@/components/map"), {
 
 type MobilePassportMapProps = PropsWithChildren<{
   passport: PassportData | null;
-  loading: boolean;
-  error: string | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
 }>
@@ -22,8 +20,6 @@ type MobilePassportMapProps = PropsWithChildren<{
 export function MobilePassportMap({
   children,
   passport,
-  loading,
-  error,
   selectedEvent,
   setSelectedEvent,
 }: MobilePassportMapProps) {
@@ -40,22 +36,6 @@ export function MobilePassportMap({
       setDefaultPosition([firstEvent.location.lat, firstEvent.location.lng]);
     }
   }, [passport]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading map...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen text-red-500">
-        {error}
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-screen w-full relative">

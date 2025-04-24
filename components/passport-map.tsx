@@ -28,12 +28,10 @@ export type PassportData = {
 // Define main props for the wrapper
 type PassportMapProps = {
   passport: PassportData | null;
-  loading: boolean;
-  error: string | null;
   tab?: string;
 };
 
-export function PassportMap({ passport, loading, error, tab }: PassportMapProps) {
+export function PassportMap({ passport, tab }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(null);
 
   return (
@@ -42,8 +40,6 @@ export function PassportMap({ passport, loading, error, tab }: PassportMapProps)
       <div className="hidden md:block">
         <DesktopPassportMap
           passport={passport}
-          loading={loading}
-          error={error}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
         />
