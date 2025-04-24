@@ -6,6 +6,7 @@ import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 import {
   Collapsible,
@@ -37,7 +38,7 @@ export function MobilePassportMap({
   const [isOpen, setIsOpen] = useState(false);
   const [tabMode, setTabMode] = useState<"grid" | "map">(tab);
   const pathname = usePathname();
-  
+
   return (
     <div className="flex h-screen w-full relative">
       {tabMode === "map" && (
@@ -50,7 +51,14 @@ export function MobilePassportMap({
         />
       )}
 
-      <div className="absolute top-0 left-0 right-0 rounded-b-lg text-white z-10 p-4 pt-20 pb-10 bg-coral-gradient backdrop-blur-none transition-all duration-300 ease-in-out">
+      <div
+        className={cn(
+          "text-white p-4 pt-20",
+          tabMode === "map" &&
+            "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient backdrop-blur-none transition-all duration-300 ease-in-out",
+          tabMode === "grid" && "bg-coral-blue flex flex-col w-full h-full gap-10"
+        )}
+      >
         <div className="flex flex-col justify-center items-center bg-white/20 backdrop-blur-none rounded-t-lg text-white w-full">
           <Collapsible
             open={isOpen}
@@ -146,6 +154,41 @@ export function MobilePassportMap({
             </Button>
           </div>
         </div>
+
+        {tabMode === "grid" && (
+          <div className="grid grid-cols-4 gap-2">
+            {passport?.events.map((event) => {
+              const isSelected = selectedEvent && event.id === selectedEvent.id;
+              return (
+                <div
+                  key={event.id}
+                  className={`relative aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90 ${
+                    isSelected ? "ring-2 ring-white" : ""
+                  }`}
+                  onClick={() => setSelectedEvent(event)}
+                >
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={event.image_url}
+                      alt={`Event ${event.id}`}
+                      fill
+                      sizes="96px"
+                      className="object-cover rounded-full w-full h-full"
+                      onError={(e) => {
+                        // Replace with a fallback on error
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
+                      }}
+                    />
+                  </div>
+                  <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm z-10">
+                    {event.id}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
