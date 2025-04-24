@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 
 type MapProps = {
   defaultPosition: L.LatLngExpression;
+  initialZoomLevel?: number;
+  maxZoomLevel?: number;
   events?: PassportEvent[];
   selectedEvent?: PassportEvent | null;
   onSelectEvent?: (event: PassportEvent) => void;
@@ -17,15 +19,13 @@ type MapProps = {
 
 export default function Map({
   defaultPosition,
+  initialZoomLevel = 14,
+  maxZoomLevel = 17,
   events = [],
   selectedEvent,
   onSelectEvent,
   className,
 }: MapProps) {
-  // Zoom level constants
-  const initialZoom = 14;
-  const zoomedInLevel = 17;
-
   // Map reference
   const mapRef = useRef<L.Map | null>(null);
 
@@ -76,7 +76,7 @@ export default function Map({
       if (prevSelectedEventIdRef.current !== currentSelectedId) {
         mapRef.current.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
-          zoomedInLevel,
+          maxZoomLevel,
           {
             animate: true,
             duration: 1,
@@ -91,7 +91,7 @@ export default function Map({
       if (mapRef.current) {
         mapRef.current.flyTo(
           defaultPosition,
-          initialZoom,
+          initialZoomLevel,
           {
             animate: true,
             duration: 1,
@@ -105,10 +105,9 @@ export default function Map({
   return (
     <MapContainer
       center={defaultPosition}
-      zoom={initialZoom}
+      zoom={initialZoomLevel}
       zoomControl={false}
       scrollWheelZoom={true}
-      // style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
       className={cn("w-full h-full", className)}
       key="map-container"

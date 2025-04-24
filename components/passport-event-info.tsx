@@ -66,6 +66,7 @@ export default function PassportEventInfo({
           <MiniMapWithNoSSR 
             defaultPosition={defaultPosition} 
             selectedPosition={selectedPosition} 
+            className="h-[300px]"
           />
         </div>
       </div>
