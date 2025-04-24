@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DesktopPassportMap } from "./desktop-passport-map";
+import { MobilePassportMap } from "./mobile-passport-map";
 
 // Define the passport data types
 type PassportPartner = {
@@ -32,13 +33,30 @@ type PassportMapProps = {
 };
 
 export function PassportMap({ passport, tab }: PassportMapProps) {
-  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
+    null
+  );
+
+  // Default position for Bangkok - will be used initially
+  const bangkokPosition: [number, number] = [13.7563, 100.5018];
+
+  const [defaultPosition, setDefaultPosition] =
+    useState<[number, number]>(bangkokPosition);
+
+  // Set map position based on first available event
+  useEffect(() => {
+    if (passport && passport.events.length) {
+      const firstEvent = passport.events[0];
+      setDefaultPosition([firstEvent.location.lat, firstEvent.location.lng]);
+    }
+  }, [passport]);
 
   return (
     <>
       {/* Desktop version - hidden on mobile, shown on md screens and up */}
       <div className="hidden md:block">
         <DesktopPassportMap
+          defaultPosition={defaultPosition}
           passport={passport}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
@@ -46,9 +64,14 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
       </div>
 
       {/* Mobile version - shown on mobile, hidden on md screens and up */}
-      <div className="block md:hidden">
-        <div className="p-4 text-center">Mobile version coming soon</div>
-      </div>
+      {/* <div className="block md:hidden">
+        <MobilePassportMap
+          defaultPosition={defaultPosition}
+          passport={passport}
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
+      </div> */}
     </>
   );
 }

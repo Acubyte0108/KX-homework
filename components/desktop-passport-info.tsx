@@ -7,7 +7,7 @@ type DesktopPassportInfoProps = {
   onSelectEvent: (event: PassportEvent) => void;
 };
 
-export default function DesktopPassportInfo({ 
+export function DesktopPassportInfo({ 
   passportData, 
   selectedEvent,
   onSelectEvent 

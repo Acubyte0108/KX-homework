@@ -2,41 +2,28 @@
 
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import DesktopPassportInfo from "@/components/desktop-passport-info";
+import { DesktopPassportInfo } from "@/components/desktop-passport-info";
 import { PassportData, PassportEvent } from "@/components/passport-map";
-import DesktopEventInfo from "@/components/desktop-event-info";
+import { DesktopEventInfo } from "@/components/desktop-event-info";
 
 // Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
 
-type DesktopPassportMapProps = PropsWithChildren<{
+type DesktopPassportMapProps = {
+  defaultPosition: L.LatLngExpression;
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
-}>
+};
 
 export function DesktopPassportMap({
-  children,
+  defaultPosition,
   passport,
   selectedEvent,
   setSelectedEvent,
 }: DesktopPassportMapProps) {
-  // Default position for Bangkok - will be used initially
-  const bangkokPosition: [number, number] = [13.7563, 100.5018];
-
-  const [defaultPosition, setDefaultPosition] =
-    useState<[number, number]>(bangkokPosition);
-
-  // Set map position based on first available event
-  useEffect(() => {
-    if (passport && passport.events.length) {
-      const firstEvent = passport.events[0];
-      setDefaultPosition([firstEvent.location.lat, firstEvent.location.lng]);
-    }
-  }, [passport]);
-
   return (
     <div className="flex h-screen w-full relative">
       {/* Left side: Map (4/5 of screen) */}
@@ -68,9 +55,6 @@ export function DesktopPassportMap({
           onClose={() => setSelectedEvent(null)}
         />
       )}
-
-      {/* Additional content if needed */}
-      {children && <div className="absolute">{children}</div>}
     </div>
   );
 }

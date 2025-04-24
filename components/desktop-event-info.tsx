@@ -14,7 +14,7 @@ type DesktopEventInfoProps = {
   onClose: () => void;
 }
 
-export default function DesktopEventInfo({ 
+export function DesktopEventInfo({ 
   selectedEvent, 
   defaultPosition, 
   onClose 
