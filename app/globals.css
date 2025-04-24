@@ -41,6 +41,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Coral Colors */
+  --color-coral-blue: var(--corol-blue);
+  --color-coral-dark-blue: var(--corol-dark-blue);
+  --color-coral-pink: var(--corol-pink);
+  --color-coral-gray: var(--corol-gray);
 }
 
 :root {
@@ -76,6 +82,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Coral Colors */
+  --corol-blue: oklch(0.29 0.0711 249.29);
+  --corol-dark-blue: oklch(0.21 0.0406 270.07);
+  --corol-pink: oklch(0.63 0.2608 351.9);
+  --corol-gray: oklch(0.55 0.023 267.13);
 }
 
 .dark {
