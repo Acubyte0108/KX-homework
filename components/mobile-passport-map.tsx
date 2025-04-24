@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 import {
   Collapsible,
@@ -35,7 +36,6 @@ export function MobilePassportMap({
 }: MobilePassportMapProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tabMode, setTabMode] = useState<"grid" | "map">(tab);
-  const router = useRouter();
   const pathname = usePathname();
   
   return (
@@ -108,31 +108,41 @@ export function MobilePassportMap({
                 "w-full text-white  hover:text-white hover:bg-white/10 py-6 rounded-none flex items-center justify-center",
                 tabMode === "grid" && "border-b-2 border-b-white"
               )}
-              onClick={() => {
-                if (tabMode === "grid") return;
+              asChild
+              onClick={(e) => {
+                if (tabMode === "grid") {
+                  e.preventDefault();
+                  return;
+                }
                 setSelectedEvent(null);
                 setTabMode("grid");
-                router.push(pathname);
               }}
             >
-              <Grid size={16} />
-              <span>Grid View</span>
+              <Link href={pathname}>
+                <Grid size={16} />
+                <span>Grid View</span>
+              </Link>
             </Button>
             <Button
               variant="ghost"
               className={cn(
-                "w-full text-white  hover:text-white hover:bg-white/20 py-6 rounded-none flex items-center justify-center",
+                "w-full text-white hover:text-white hover:bg-white/20 py-6 rounded-none flex items-center justify-center",
                 tabMode === "map" && "border-b-2 border-b-white"
               )}
-              onClick={() => {
-                if (tabMode === "map") return;
+              asChild
+              onClick={(e) => {
+                if (tabMode === "map") {
+                  e.preventDefault();
+                  return;
+                }
                 setSelectedEvent(null);
                 setTabMode("map");
-                router.push(`${pathname}?tab=map`);
               }}
             >
-              <MapPin size={16} />
-              <span>Map View</span>
+              <Link href={`${pathname}?tab=map`}>
+                <MapPin size={16} />
+                <span>Map View</span>
+              </Link>
             </Button>
           </div>
         </div>
