@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import {
   Collapsible,
@@ -10,6 +11,7 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
@@ -17,6 +19,7 @@ const MapWithNoSSR = dynamic(() => import("@/components/map"), {
 
 type MobilePassportMapProps = {
   defaultPosition: L.LatLngExpression;
+  tab?: "grid" | "map";
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
@@ -24,11 +27,14 @@ type MobilePassportMapProps = {
 
 export function MobilePassportMap({
   defaultPosition,
+  tab = "grid",
   passport,
   selectedEvent,
   setSelectedEvent,
 }: MobilePassportMapProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const [tabMode, setTabMode] = useState<"grid" | "map">(tab);
+
   return (
     <div className="flex h-screen w-full relative">
       <MapWithNoSSR
@@ -90,15 +96,29 @@ export function MobilePassportMap({
               </div>
             </CollapsibleContent>
           </Collapsible>
-          <div className="flex mt-4 border-t border-white/20 w-full">
-            <button className="flex-1 py-3 flex items-center justify-center">
-              <Grid size={16} className="mr-2" />
+          <div className="grid grid-cols-2 mt-4 border-t border-white/20 w-full">
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full text-white  hover:text-white hover:bg-white/10 py-6 rounded-none flex items-center justify-center",
+                tabMode === "grid" && "border-b-2 border-b-white"
+              )}
+              onClick={() => setTabMode("grid")}
+            >
+              <Grid size={16} />
               <span>Grid View</span>
-            </button>
-            <button className="flex-1 py-3 flex items-center justify-center bg-white/10 font-medium">
-              <MapPin size={16} className="mr-2" />
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full text-white  hover:text-white hover:bg-white/20 py-6 rounded-none flex items-center justify-center",
+                tabMode === "map" && "border-b-2 border-b-white"
+              )}
+              onClick={() => setTabMode("map")}
+            >
+              <MapPin size={16} />
               <span>Map View</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

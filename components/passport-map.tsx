@@ -30,7 +30,7 @@ export type PassportData = {
 // Define main props for the wrapper
 type PassportMapProps = {
   passport: PassportData | null;
-  tab?: string;
+  tab?: "grid" | "map";
 };
 
 export function PassportMap({ passport, tab }: PassportMapProps) {
@@ -73,6 +73,7 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
       ) : (
         <MobilePassportMap
           defaultPosition={defaultPosition}
+          tab={tab}
           passport={passport}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
