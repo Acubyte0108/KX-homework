@@ -2,9 +2,9 @@
 
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import PassportCard from "@/components/passport-card";
+import DesktopPassportInfo from "@/components/desktop-passport-info";
 import { PassportData, PassportEvent } from "@/components/passport-map";
-import PassportEventInfo from "@/components/passport-event-info";
+import DesktopEventInfo from "@/components/desktop-event-info";
 
 // Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
@@ -72,7 +72,7 @@ export function DesktopPassportMap({
       {/* Right side: Passport (1/5 of screen) */}
       <div className="md:w-[500px] w-1/5 h-screen border-l border-sidebar-border bg-sidebar overflow-auto">
         {passport && (
-          <PassportCard
+          <DesktopPassportInfo
             passportData={passport}
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
@@ -82,7 +82,7 @@ export function DesktopPassportMap({
 
       {/* Floating event info that appears when an event is selected */}
       {selectedEvent && (
-        <PassportEventInfo
+        <DesktopEventInfo
           selectedEvent={selectedEvent}
           defaultPosition={defaultPosition}
           onClose={() => setSelectedEvent(null)}

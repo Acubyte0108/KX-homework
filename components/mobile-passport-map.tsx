@@ -2,9 +2,9 @@
 
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import PassportCard from "@/components/passport-card";
+import PassportCard from "@/components/desktop-passport-info";
 import { PassportData, PassportEvent } from "@/components/passport-map";
-import PassportEventInfo from "@/components/passport-event-info";
+import PassportEventInfo from "@/components/desktop-event-info";
 
 // Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {

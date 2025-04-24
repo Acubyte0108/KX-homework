@@ -8,17 +8,17 @@ const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
 });
 
-type PassportEventInfoProps = {
+type DesktopEventInfoProps = {
   selectedEvent: PassportEvent;
   defaultPosition: L.LatLngExpression;
   onClose: () => void;
 }
 
-export default function PassportEventInfo({ 
+export default function DesktopEventInfo({ 
   selectedEvent, 
   defaultPosition, 
   onClose 
-}: PassportEventInfoProps) {
+}: DesktopEventInfoProps) {
   // Prepare the selected position for the mini map
   const selectedPosition: L.LatLngTuple = [selectedEvent.location.lat, selectedEvent.location.lng];
 

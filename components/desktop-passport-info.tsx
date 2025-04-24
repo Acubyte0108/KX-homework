@@ -1,17 +1,17 @@
 import { PassportData, PassportEvent } from "./passport-map";
 import Image from "next/image";
 
-type PassportCardProps = {
+type DesktopPassportInfoProps = {
   passportData: PassportData;
   selectedEvent: PassportEvent | null;
   onSelectEvent: (event: PassportEvent) => void;
 };
 
-export default function PassportCard({ 
+export default function DesktopPassportInfo({ 
   passportData, 
   selectedEvent,
   onSelectEvent 
-}: PassportCardProps) {
+}: DesktopPassportInfoProps) {
 
   return (
     <div className="bg-sidebar text-sidebar-foreground h-full flex flex-col overflow-auto w-full">
