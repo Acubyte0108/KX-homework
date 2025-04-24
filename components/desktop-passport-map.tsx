@@ -27,17 +27,18 @@ export function DesktopPassportMap({
   return (
     <div className="flex h-screen w-full relative">
       {/* Left side: Map (4/5 of screen) */}
-      <div className="w-4/5 h-full">
+      {/* <div className="w-4/5 h-full"> */}
         <MapWithNoSSR
           defaultPosition={defaultPosition}
           events={passport?.events || []}
           selectedEvent={selectedEvent}
           onSelectEvent={setSelectedEvent}
+          className="z-0 w-4/5 h-full"
         />
-      </div>
+      {/* </div> */}
 
       {/* Right side: Passport (1/5 of screen) */}
-      <div className="md:w-[500px] w-1/5 h-screen border-l border-sidebar-border bg-sidebar overflow-auto">
+      <div className="md:w-[500px] w-1/5 h-screen border-l border-sidebar-border bg-sidebar overflow-auto z-0">
         {passport && (
           <DesktopPassportInfo
             passportData={passport}
