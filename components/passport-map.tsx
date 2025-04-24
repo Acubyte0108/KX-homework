@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DesktopPassportMap } from "./desktop-passport-map";
 
 // Define the passport data types
@@ -26,35 +26,15 @@ export type PassportData = {
 };
 
 // Define main props for the wrapper
-interface PassportMapProps {}
+type PassportMapProps = {
+  passport: PassportData | null;
+  loading: boolean;
+  error: string | null;
+  tab?: string;
+};
 
-export function PassportMap() {
-  const [passport, setPassport] = useState<PassportData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
-    null
-  );
-  // Load passport data when component mounts
-  useEffect(() => {
-    const fetchPassport = async () => {
-      try {
-        const response = await fetch("/passport.json");
-        if (!response.ok) {
-          throw new Error("Failed to fetch passport data");
-        }
-        const data = await response.json();
-        setPassport(data.passport);
-      } catch (error) {
-        console.error("Failed to fetch passport data:", error);
-        setError("Failed to load passport data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPassport();
-  }, []); // Empty dependency array means this runs once on mount
+export function PassportMap({ passport, loading, error, tab }: PassportMapProps) {
+  const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(null);
 
   return (
     <>

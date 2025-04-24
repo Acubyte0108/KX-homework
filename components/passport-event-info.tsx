@@ -1,4 +1,4 @@
-import { PassportEvent } from "./passport-map";
+import { PassportEvent } from "@/components/passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import Image from "next/image";

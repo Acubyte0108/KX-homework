@@ -3,14 +3,16 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import MapMarkerIcon from "./map-marker-icon";
-import { PassportEvent } from "./passport-map";
+import MapMarkerIcon from "@/components/map-marker-icon";
+import { PassportEvent } from "@/components/passport-map";
+import { cn } from "@/lib/utils";
 
 type MapProps = {
   defaultPosition: L.LatLngExpression;
   events?: PassportEvent[];
   selectedEvent?: PassportEvent | null;
   onSelectEvent?: (event: PassportEvent) => void;
+  className?: string;
 };
 
 export default function Map({
@@ -18,6 +20,7 @@ export default function Map({
   events = [],
   selectedEvent,
   onSelectEvent,
+  className,
 }: MapProps) {
   // Zoom level constants
   const initialZoom = 14;
@@ -105,9 +108,9 @@ export default function Map({
       zoom={initialZoom}
       zoomControl={false}
       scrollWheelZoom={true}
-      style={{ height: "100vh", width: "100%" }}
+      // style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
-      className="w-full h-full"
+      className={cn("w-full h-full", className)}
       key="map-container"
     >
       <TileLayer

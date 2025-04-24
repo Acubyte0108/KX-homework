@@ -2,15 +2,18 @@ import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { cn } from "@/lib/utils";
 
 type MiniMapProps = {
   defaultPosition: L.LatLngExpression;
-  selectedPosition?: L.LatLngExpression; // Optional selected position
+  selectedPosition?: L.LatLngExpression;
+  className?: string;
 };
 
 export default function MiniMap({
   defaultPosition,
   selectedPosition,
+  className,
 }: MiniMapProps) {
   const defaultZoomLevel = 14;
   const maxZoomLevel = 18;
@@ -68,7 +71,8 @@ export default function MiniMap({
       zoom={selectedPosition ? maxZoomLevel : defaultZoomLevel}
       zoomControl={false}
       scrollWheelZoom={false}
-      style={{ height: "300px", width: "100%" }}
+      // style={{ height: "300px", width: "100%" }}
+      className={cn("w-full h-full", className)}
       ref={mapRef}
     >
       <TileLayer

@@ -11,7 +11,7 @@ const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
 
-type DesktopPassportMapProps = PropsWithChildren<{
+type MobilePassportMapProps = PropsWithChildren<{
   passport: PassportData | null;
   loading: boolean;
   error: string | null;
@@ -19,14 +19,14 @@ type DesktopPassportMapProps = PropsWithChildren<{
   setSelectedEvent: (event: PassportEvent | null) => void;
 }>
 
-export function DesktopPassportMap({
+export function MobilePassportMap({
   children,
   passport,
   loading,
   error,
   selectedEvent,
   setSelectedEvent,
-}: DesktopPassportMapProps) {
+}: MobilePassportMapProps) {
   // Default position for Bangkok - will be used initially
   const bangkokPosition: [number, number] = [13.7563, 100.5018];
 
