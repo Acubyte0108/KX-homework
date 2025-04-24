@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import {
   Collapsible,
@@ -36,7 +36,8 @@ export function MobilePassportMap({
   const [isOpen, setIsOpen] = useState(false);
   const [tabMode, setTabMode] = useState<"grid" | "map">(tab);
   const router = useRouter();
-
+  const pathname = usePathname();
+  
   return (
     <div className="flex h-screen w-full relative">
       {tabMode === "map" && (
@@ -111,7 +112,7 @@ export function MobilePassportMap({
                 if (tabMode === "grid") return;
                 setSelectedEvent(null);
                 setTabMode("grid");
-                router.push("/");
+                router.push(pathname);
               }}
             >
               <Grid size={16} />
@@ -127,7 +128,7 @@ export function MobilePassportMap({
                 if (tabMode === "map") return;
                 setSelectedEvent(null);
                 setTabMode("map");
-                router.push("/?tab=map");
+                router.push(`${pathname}?tab=map`);
               }}
             >
               <MapPin size={16} />
