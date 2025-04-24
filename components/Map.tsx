@@ -69,12 +69,16 @@ export default function Map({
 
   // Handle selected event changes
   useEffect(() => {
-    if (selectedEvent && mapRef.current) {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current;
+
+    if (selectedEvent) {
       const currentSelectedId = selectedEvent.id;
 
       // Only fly if the selected event has changed
       if (prevSelectedEventIdRef.current !== currentSelectedId) {
-        mapRef.current.flyTo(
+        map.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
           maxZoomLevel,
           {
@@ -88,16 +92,12 @@ export default function Map({
       }
     } else if (!selectedEvent && prevSelectedEventIdRef.current !== null) {
       // Reset when deselected - fly back to default position and reset zoom
-      if (mapRef.current) {
-        mapRef.current.flyTo(
-          defaultPosition,
-          initialZoomLevel,
-          {
-            animate: true,
-            duration: 1,
-          }
-        );
-      }
+
+      map.flyTo(defaultPosition, initialZoomLevel, {
+        animate: true,
+        duration: 1,
+      });
+
       prevSelectedEventIdRef.current = null;
     }
   }, [selectedEvent, defaultPosition]);
