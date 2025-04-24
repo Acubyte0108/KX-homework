@@ -30,17 +30,14 @@ function LoadingPassport() {
   );
 }
 
-async function PassportContent({ tab }: { tab?: string }) {
-  const passport = await getPassportData();
-  return <PassportMap passport={passport} tab={tab} />;
-}
-
 export default async function Passport({ searchParams }: any) {
   const query = await searchParams;
 
+  const passport = await getPassportData();
+
   return (
     // <Suspense fallback={<LoadingPassport />}>
-      <PassportContent tab={query?.tab} />
+        <PassportMap passport={passport} tab={query?.tab} />
     // </Suspense>
   );
 }
