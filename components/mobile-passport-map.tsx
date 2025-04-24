@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 import {
   Collapsible,
@@ -32,18 +33,21 @@ export function MobilePassportMap({
   selectedEvent,
   setSelectedEvent,
 }: MobilePassportMapProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [tabMode, setTabMode] = useState<"grid" | "map">(tab);
+  const router = useRouter();
 
   return (
     <div className="flex h-screen w-full relative">
-      <MapWithNoSSR
-        defaultPosition={defaultPosition}
-        events={passport?.events || []}
-        selectedEvent={selectedEvent}
-        onSelectEvent={setSelectedEvent}
-        className="w-full h-full absolute top-0 left-0 z-0"
-      />
+      {tabMode === "map" && (
+        <MapWithNoSSR
+          defaultPosition={defaultPosition}
+          events={passport?.events || []}
+          selectedEvent={selectedEvent}
+          onSelectEvent={setSelectedEvent}
+          className="w-full h-full absolute top-0 left-0 z-0"
+        />
+      )}
 
       <div className="absolute top-0 left-0 right-0 rounded-b-lg text-white z-10 p-4 pt-20 pb-10 bg-coral-gradient backdrop-blur-none transition-all duration-300 ease-in-out">
         <div className="flex flex-col justify-center items-center bg-white/20 backdrop-blur-none rounded-t-lg text-white w-full">
@@ -103,7 +107,12 @@ export function MobilePassportMap({
                 "w-full text-white  hover:text-white hover:bg-white/10 py-6 rounded-none flex items-center justify-center",
                 tabMode === "grid" && "border-b-2 border-b-white"
               )}
-              onClick={() => setTabMode("grid")}
+              onClick={() => {
+                if (tabMode === "grid") return;
+                setSelectedEvent(null);
+                setTabMode("grid");
+                router.push("/");
+              }}
             >
               <Grid size={16} />
               <span>Grid View</span>
@@ -114,7 +123,12 @@ export function MobilePassportMap({
                 "w-full text-white  hover:text-white hover:bg-white/20 py-6 rounded-none flex items-center justify-center",
                 tabMode === "map" && "border-b-2 border-b-white"
               )}
-              onClick={() => setTabMode("map")}
+              onClick={() => {
+                if (tabMode === "map") return;
+                setSelectedEvent(null);
+                setTabMode("map");
+                router.push("/?tab=map");
+              }}
             >
               <MapPin size={16} />
               <span>Map View</span>
