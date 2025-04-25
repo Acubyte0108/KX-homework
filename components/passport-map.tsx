@@ -148,22 +148,22 @@ export function PassportMap({ passport }: PassportMapProps) {
                 </DrawerTitle>
               </DrawerHeader>
               <div className="flex gap-4 w-full justify-center items-center mb-4">
-                {passport?.events.map((event) => {
-                  return (
+                {passport?.events.map((event) => 
+                  (
                     <div
                       key={event.id}
-                      className="w-16 h-16 bg-coral-pink rounded-full"
+                      className="w-16 h-16 bg-coral-pink rounded-full relative"
+                      onClick={() => setSelectedEvent(event)}
                     >
                       <Image
                         src={event.image_url}
                         alt={`Event ${event.id}`}
                         fill
                         sizes="64px"
-                        className="object-contain rounded-full w-full h-full"
+                        className="object-contain w-full h-full rounded-full"
                       />
                     </div>
-                  );
-                })}
+                ))}
               </div>
             </DrawerContent>
           </Drawer>
