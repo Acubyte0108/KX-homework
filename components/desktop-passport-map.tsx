@@ -35,7 +35,7 @@ export function DesktopPassportMap({
       <div className="lg:w-[450px] w-2/5 h-full overflow-auto z-0">
         {passport && (
           <DesktopPassportInfo
-            passportData={passport}
+            passport={passport}
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
           />
