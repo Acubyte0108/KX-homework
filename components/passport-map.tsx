@@ -118,7 +118,7 @@ export function PassportMap({ passport }: PassportMapProps) {
       )} */}
 
       <div className="flex h-screen w-full relative">
-        <div
+        {/* <div
           className={cn(
             "z-0",
             isDesktop && "lg:flex-grow w-3/5",
@@ -131,7 +131,29 @@ export function PassportMap({ passport }: PassportMapProps) {
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
           />
-        </div>
+        </div> */}
+
+        {/* Fix weird map center position on desktop and mobile when switching screen size */}
+        {isDesktop && (
+          <div className="lg:flex-grow w-3/5 z-0">
+            <MapWithNoSSR
+              defaultPosition={defaultPosition}
+              events={passport?.events || []}
+              selectedEvent={selectedEvent}
+              onSelectEvent={setSelectedEvent}
+            />
+          </div>
+        )}
+        {!isDesktop && tab === "map" && (
+          <div className="h-full w-full z-0">
+            <MapWithNoSSR
+              defaultPosition={defaultPosition}
+              events={passport?.events || []}
+              selectedEvent={selectedEvent}
+              onSelectEvent={setSelectedEvent}
+            />
+          </div>
+        )}
 
         <div
           className={cn(
