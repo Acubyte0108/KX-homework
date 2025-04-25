@@ -1,12 +1,10 @@
 "use client";
 
-import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { DesktopPassportInfo } from "@/components/desktop-passport-info";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { DesktopEventInfo } from "@/components/desktop-event-info";
 
-// Import Map with no SSR once, outside the component
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
@@ -26,16 +24,15 @@ export function DesktopPassportMap({
 }: DesktopPassportMapProps) {
   return (
     <div className="flex h-screen w-full relative">
-      {/* Left side: Map (4/5 of screen) */}
+      <div className="lg:flex-grow w-3/5 z-0">
         <MapWithNoSSR
           defaultPosition={defaultPosition}
           events={passport?.events || []}
           selectedEvent={selectedEvent}
           onSelectEvent={setSelectedEvent}
-          className="z-0 lg:w-[calc(100%-450px)] w-full h-full"
         />
-
-      <div className="lg:w-[450px] w-full h-full overflow-auto z-0">
+      </div>
+      <div className="lg:w-[450px] w-2/5 h-full overflow-auto z-0">
         {passport && (
           <DesktopPassportInfo
             passportData={passport}
@@ -44,7 +41,6 @@ export function DesktopPassportMap({
           />
         )}
       </div>
-
       {selectedEvent && (
         <DesktopEventInfo
           selectedEvent={selectedEvent}
