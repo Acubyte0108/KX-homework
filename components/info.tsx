@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-
+import { useEffect } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,22 +16,30 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 type MobilePassportMapProps = {
-  tab?: string;
+  tab?: string | null;
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
 };
 
 export function Info({
-  tab = "grid",
+  tab,
   passport,
   selectedEvent,
   setSelectedEvent,
 }: MobilePassportMapProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [tabMode, setTabMode] = useState(tab);
+  const [isOpen, setIsOpen] = useState(true);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  //   const [tabMode, setTabMode] = useState(tab);
   const pathname = usePathname();
-  
+
+  useEffect(() => {
+    if (isFirstLoad && tab === 'map') {
+      setIsOpen(false);
+      setIsFirstLoad(false);
+    }
+  }, [isFirstLoad, tab]);
+
   return (
     <>
       <div className="flex flex-col justify-center items-center bg-white/20 backdrop-blur-none rounded-t-lg text-white w-full md:rounded-lg">
@@ -96,16 +104,15 @@ export function Info({
             variant="ghost"
             className={cn(
               "w-full text-white  hover:text-white hover:bg-white/10 py-6 rounded-none flex items-center justify-center",
-              tabMode === "grid" && "border-b-2 border-b-white"
+              !tab && "border-b-2 border-b-white"
             )}
             asChild
             onClick={(e) => {
-              if (tabMode === "grid") {
+              if (!tab) {
                 e.preventDefault();
                 return;
               }
               setSelectedEvent(null);
-              setTabMode("grid");
             }}
           >
             <Link href={pathname}>
@@ -117,16 +124,15 @@ export function Info({
             variant="ghost"
             className={cn(
               "w-full text-white hover:text-white hover:bg-white/20 py-6 rounded-none flex items-center justify-center",
-              tabMode === "map" && "border-b-2 border-b-white"
+              tab === "map" && "border-b-2 border-b-white"
             )}
             asChild
             onClick={(e) => {
-              if (tabMode === "map") {
+              if (tab === "map") {
                 e.preventDefault();
                 return;
               }
               setSelectedEvent(null);
-              setTabMode("map");
             }}
           >
             <Link href={`${pathname}?tab=map`}>
@@ -137,7 +143,7 @@ export function Info({
         </div>
       </div>
 
-      {tabMode === "grid" && (
+      {!tab && (
         <div className="grid grid-cols-4 gap-2">
           {passport?.events.map((event) => {
             const isSelected = selectedEvent && event.id === selectedEvent.id;

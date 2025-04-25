@@ -144,7 +144,7 @@ export function PassportMap({ passport }: PassportMapProps) {
           )}
         >
           <Info
-            tab={tab || "grid"}
+            tab={tab}
             passport={passport}
             selectedEvent={selectedEvent}
             setSelectedEvent={setSelectedEvent}
