@@ -1,23 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DesktopPassportMap } from "./desktop-passport-map";
-import { MobilePassportMap } from "./mobile-passport-map";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@radix-ui/react-collapsible";
-import Image from "next/image";
-import { ChevronsUpDown, Grid, MapPin } from "lucide-react";
-import { ChevronsDownUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Info } from "@/components/info";
 import { EventInfo } from "@/components/event-info";
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
@@ -98,7 +85,6 @@ export function PassportMap({ passport }: PassportMapProps) {
 
   return (
     <>
-      {/* New Style */}
       <div className="flex flex-col h-full relative">
         <div className="absolute w-full h-full">
           {(isDesktop || (!isDesktop && tab === "map")) && (
@@ -113,8 +99,8 @@ export function PassportMap({ passport }: PassportMapProps) {
 
         <div className="z-2 flex flex-grow pointer-events-none">
           <div className="flex w-full justify-end">
-            {selectedEvent && (
-              <div className="fixed left-8 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
+            {isDesktop && selectedEvent && (
+              <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
                 <EventInfo
                   selectedEvent={selectedEvent}
                   defaultPosition={defaultPosition}
@@ -122,7 +108,15 @@ export function PassportMap({ passport }: PassportMapProps) {
                 />
               </div>
             )}
-            <div className="bg-coral-blue text-white p-4 pt-20 lg:w-[450px] overflow-auto flex flex-col gap-10 pointer-events-auto">
+            <div
+              className={cn(
+                "bg-coral-blue text-white p-4 pt-20 pointer-events-auto",
+                isDesktop && "lg:w-[450px] overflow-auto flex flex-col gap-10",
+                !isDesktop && tab === "map"
+                  ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient"
+                  : "w-full h-full flex flex-col gap-10"
+              )}
+            >
               <Info
                 tab={tab}
                 passport={passport}
