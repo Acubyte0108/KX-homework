@@ -7,6 +7,15 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PassportInfo } from "@/components/passport-info";
 import { EventInfo } from "@/components/event-info";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import Image from "next/image";
+
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
@@ -126,6 +135,39 @@ export function PassportMap({ passport }: PassportMapProps) {
             </div>
           </div>
         </div>
+
+        {!isDesktop && tab === "map" && (
+          <Drawer open={true} shouldScaleBackground={false} modal={false}>
+            <DrawerContent
+              overlayClassName="bg-transparent"
+              className="bg-gray-900/20 backdrop-blur-md flex flex-col"
+            >
+              <DrawerHeader className="text-center">
+                <DrawerTitle className="text-white">
+                  Tab the slot or location pin to information
+                </DrawerTitle>
+              </DrawerHeader>
+              <div className="flex gap-4 w-full justify-center items-center mb-4">
+                {passport?.events.map((event) => {
+                  return (
+                    <div
+                      key={event.id}
+                      className="w-16 h-16 bg-coral-pink rounded-full"
+                    >
+                      <Image
+                        src={event.image_url}
+                        alt={`Event ${event.id}`}
+                        fill
+                        sizes="64px"
+                        className="object-contain rounded-full w-full h-full"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </DrawerContent>
+          </Drawer>
+        )}
       </div>
     </>
   );
