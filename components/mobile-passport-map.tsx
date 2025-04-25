@@ -56,7 +56,8 @@ export function MobilePassportMap({
           "text-white p-4 pt-20",
           tabMode === "map" &&
             "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient backdrop-blur-none transition-all duration-300 ease-in-out",
-          tabMode === "grid" && "bg-coral-blue flex flex-col w-full h-full gap-10"
+          tabMode === "grid" &&
+            "bg-coral-blue flex flex-col w-full h-full gap-10"
         )}
       >
         <div className="flex flex-col justify-center items-center bg-white/20 backdrop-blur-none rounded-t-lg text-white w-full">
@@ -65,35 +66,48 @@ export function MobilePassportMap({
             onOpenChange={setIsOpen}
             className="w-full"
           >
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center mr-3">
-                  <svg width="20" height="20" viewBox="0 0 100 100">
-                    <rect x="10" y="10" width="20" height="20" fill="#FF3D71" />
-                    <rect x="35" y="10" width="20" height="20" fill="#4ecca3" />
-                    <rect x="10" y="35" width="20" height="20" fill="#FFAA00" />
-                    <rect x="35" y="35" width="20" height="20" fill="#3366FF" />
-                  </svg>
+            <div className="flex flex-col gap-4 p-4">
+              <div className="flex justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-8 w-8 rounded-full overflow-hidden relative">
+                    {passport?.partner.profile_image && (
+                      <Image
+                        src={passport?.partner.profile_image}
+                        alt={passport?.partner.display_name}
+                        fill
+                        sizes="32px"
+                        className="object-cover"
+                        onError={(e) => {
+                          // Replace with a fallback on error
+                          const target = e.target as HTMLImageElement;
+                          target.src =
+                            "https://placehold.co/200x200?text=Partner";
+                        }}
+                      />
+                    )}
+                  </div>
+                  <span className="text-lg font-bold">Coral</span>
                 </div>
-                <span className="text-lg font-bold">Coral</span>
+                <CollapsibleTrigger asChild>
+                  <button className="w-8 h-8 flex items-center justify-center">
+                    {isOpen ? (
+                      <ChevronsDownUp size={20} color="white" />
+                    ) : (
+                      <ChevronsUpDown size={20} color="white" />
+                    )}
+                  </button>
+                </CollapsibleTrigger>
               </div>
-              <CollapsibleTrigger asChild>
-                <button className="w-8 h-8 flex items-center justify-center">
-                  {isOpen ? (
-                    <ChevronsDownUp size={20} color="white" />
-                  ) : (
-                    <ChevronsUpDown size={20} color="white" />
-                  )}
-                </button>
-              </CollapsibleTrigger>
+              <div className="flex justify-between">
+                <h2 className="text-lg font-bold">ฝาท่อ Chinatown เยาวราช</h2>
+                {!isOpen && (
+                  <div className="text-lg text-emerald-400">0/18</div>
+                )}
+              </div>
             </div>
 
             <CollapsibleContent>
               <div className="p-4 pt-0">
-                <h2 className="text-lg font-bold mb-2">
-                  ฝาท่อ Chinatown เยาวราช
-                </h2>
-
                 <p className="text-sm mb-4 leading-relaxed">
                   มาสำรวจฝาท่อ Chinatown เยาวราช ดูงานศิลปะ
                   พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ

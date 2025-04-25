@@ -2,7 +2,6 @@ import { PassportMap, PassportData } from "@/components/passport-map";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-// Use the URL path approach as preferred by the user
 async function getPassportData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
