@@ -8,6 +8,17 @@ import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@radix-ui/react-collapsible";
+import Image from "next/image";
+import { ChevronsUpDown, Grid, MapPin } from "lucide-react";
+import { ChevronsDownUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Info } from "@/components/info";
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
@@ -37,15 +48,17 @@ export type PassportData = {
 // Define main props for the wrapper
 type PassportMapProps = {
   passport: PassportData | null;
-  tab?: "" | "map";
 };
 
-export function PassportMap({ passport, tab }: PassportMapProps) {
+export function PassportMap({ passport }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
     null
   );
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const tab = searchParams.get("tab");
 
   // Default position for Bangkok - will be used initially
   const bangkokPosition: [number, number] = [13.7563, 100.5018];
@@ -78,9 +91,11 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
     }
     // Handle invalid state: map tab on desktop - navigate with page reload
     else if (isDesktop && tab === "map") {
-      router.push("/");
+      router.replace("/", { scroll: false });
     }
   }, [isDesktop, wasDesktop, router, tab]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -115,6 +130,24 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
             events={passport?.events || []}
             selectedEvent={selectedEvent}
             onSelectEvent={setSelectedEvent}
+          />
+        </div>
+
+        <div
+          className={cn(
+            "z-0 bg-coral-blue text-white p-4 pt-20",
+            isDesktop &&
+              "lg:w-[450px] w-2/5 h-full overflow-auto flex flex-col gap-10",
+            !isDesktop && tab === "map"
+              ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient"
+              : "w-full h-full flex flex-col gap-10"
+          )}
+        >
+          <Info
+            tab={tab || "grid"}
+            passport={passport}
+            selectedEvent={selectedEvent}
+            setSelectedEvent={setSelectedEvent}
           />
         </div>
       </div>
