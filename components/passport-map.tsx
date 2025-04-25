@@ -5,7 +5,7 @@ import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Info } from "@/components/info";
+import { PassportInfo } from "@/components/passport-info";
 import { EventInfo } from "@/components/event-info";
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
@@ -117,7 +117,7 @@ export function PassportMap({ passport }: PassportMapProps) {
                   : "w-full h-full flex flex-col gap-10"
               )}
             >
-              <Info
+              <PassportInfo
                 tab={tab}
                 passport={passport}
                 selectedEvent={selectedEvent}

@@ -15,22 +15,21 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-type MobilePassportMapProps = {
+type PassportInfoProps = {
   tab?: string | null;
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
 };
 
-export function Info({
+export function PassportInfo({
   tab,
   passport,
   selectedEvent,
   setSelectedEvent,
-}: MobilePassportMapProps) {
+}: PassportInfoProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-  //   const [tabMode, setTabMode] = useState(tab);
   const pathname = usePathname();
 
   useEffect(() => {
