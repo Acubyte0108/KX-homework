@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { DesktopPassportMap } from "./desktop-passport-map";
+import { MobilePassportMap } from "./mobile-passport-map";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 // Define the passport data types
 type PassportPartner = {
@@ -26,53 +28,57 @@ export type PassportData = {
 };
 
 // Define main props for the wrapper
-interface PassportMapProps {}
+type PassportMapProps = {
+  passport: PassportData | null;
+  tab?: "grid" | "map";
+};
 
-export function PassportMap() {
-  const [passport, setPassport] = useState<PassportData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function PassportMap({ passport, tab }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
     null
   );
-  // Load passport data when component mounts
-  useEffect(() => {
-    const fetchPassport = async () => {
-      try {
-        const response = await fetch("/passport.json");
-        if (!response.ok) {
-          throw new Error("Failed to fetch passport data");
-        }
-        const data = await response.json();
-        setPassport(data.passport);
-      } catch (error) {
-        console.error("Failed to fetch passport data:", error);
-        setError("Failed to load passport data");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
-    fetchPassport();
-  }, []); // Empty dependency array means this runs once on mount
+  // Default position for Bangkok - will be used initially
+  const bangkokPosition: [number, number] = [13.7563, 100.5018];
+
+  const [defaultPosition, setDefaultPosition] =
+    useState<[number, number]>(bangkokPosition);
+
+  // Set map position based on first available event
+  useEffect(() => {
+    if (passport && passport.events.length) {
+      const firstEvent = passport.events[0];
+      // Check if the coordinates are valid before setting them
+      if (
+        firstEvent.location &&
+        !isNaN(firstEvent.location.lat) &&
+        !isNaN(firstEvent.location.lng)
+      ) {
+        setDefaultPosition([firstEvent.location.lat, firstEvent.location.lng]);
+      }
+    }
+  }, [passport]);
 
   return (
     <>
-      {/* Desktop version - hidden on mobile, shown on md screens and up */}
-      <div className="hidden md:block">
+      {/* Conditionally render either desktop or mobile map */}
+      {isDesktop ? (
         <DesktopPassportMap
+          defaultPosition={defaultPosition}
           passport={passport}
-          loading={loading}
-          error={error}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
         />
-      </div>
-
-      {/* Mobile version - shown on mobile, hidden on md screens and up */}
-      <div className="block md:hidden">
-        <div className="p-4 text-center">Mobile version coming soon</div>
-      </div>
+      ) : (
+        <MobilePassportMap
+          defaultPosition={defaultPosition}
+          tab={tab}
+          passport={passport}
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
+      )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { PassportEvent } from "./passport-map";
+import { PassportEvent } from "@/components/passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -8,22 +8,22 @@ const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
 });
 
-type PassportEventInfoProps = {
+type DesktopEventInfoProps = {
   selectedEvent: PassportEvent;
   defaultPosition: L.LatLngExpression;
   onClose: () => void;
 }
 
-export default function PassportEventInfo({ 
+export function DesktopEventInfo({ 
   selectedEvent, 
   defaultPosition, 
   onClose 
-}: PassportEventInfoProps) {
+}: DesktopEventInfoProps) {
   // Prepare the selected position for the mini map
   const selectedPosition: L.LatLngTuple = [selectedEvent.location.lat, selectedEvent.location.lng];
 
   return (
-    <div className="fixed left-8 top-8 bg-white shadow-lg rounded-lg p-4 max-w-sm z-1000 w-[400px] h-[calc(100vh-4rem)] overflow-auto">
+    <div className="fixed left-8 top-8 bg-white shadow-lg rounded-lg p-4 max-w-sm z-10 w-[400px] h-[calc(100vh-4rem)] overflow-auto">
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-medium">Event {selectedEvent.id}</h3>
         <button 
@@ -66,6 +66,7 @@ export default function PassportEventInfo({
           <MiniMapWithNoSSR 
             defaultPosition={defaultPosition} 
             selectedPosition={selectedPosition} 
+            className="h-[300px]"
           />
         </div>
       </div>

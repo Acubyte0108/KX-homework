@@ -3,26 +3,29 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import MapMarkerIcon from "./map-marker-icon";
-import { PassportEvent } from "./passport-map";
+import MapMarkerIcon from "@/components/map-marker-icon";
+import { PassportEvent } from "@/components/passport-map";
+import { cn } from "@/lib/utils";
 
 type MapProps = {
   defaultPosition: L.LatLngExpression;
+  initialZoomLevel?: number;
+  maxZoomLevel?: number;
   events?: PassportEvent[];
   selectedEvent?: PassportEvent | null;
   onSelectEvent?: (event: PassportEvent) => void;
+  className?: string;
 };
 
 export default function Map({
   defaultPosition,
+  initialZoomLevel = 14,
+  maxZoomLevel = 17,
   events = [],
   selectedEvent,
   onSelectEvent,
+  className,
 }: MapProps) {
-  // Zoom level constants
-  const initialZoom = 14;
-  const zoomedInLevel = 17;
-
   // Map reference
   const mapRef = useRef<L.Map | null>(null);
 
@@ -66,14 +69,18 @@ export default function Map({
 
   // Handle selected event changes
   useEffect(() => {
-    if (selectedEvent && mapRef.current) {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current;
+
+    if (selectedEvent) {
       const currentSelectedId = selectedEvent.id;
 
       // Only fly if the selected event has changed
       if (prevSelectedEventIdRef.current !== currentSelectedId) {
-        mapRef.current.flyTo(
+        map.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
-          zoomedInLevel,
+          maxZoomLevel,
           {
             animate: true,
             duration: 1,
@@ -85,16 +92,12 @@ export default function Map({
       }
     } else if (!selectedEvent && prevSelectedEventIdRef.current !== null) {
       // Reset when deselected - fly back to default position and reset zoom
-      if (mapRef.current) {
-        mapRef.current.flyTo(
-          defaultPosition,
-          initialZoom,
-          {
-            animate: true,
-            duration: 1,
-          }
-        );
-      }
+
+      map.flyTo(defaultPosition, initialZoomLevel, {
+        animate: true,
+        duration: 1,
+      });
+
       prevSelectedEventIdRef.current = null;
     }
   }, [selectedEvent, defaultPosition]);
@@ -102,12 +105,11 @@ export default function Map({
   return (
     <MapContainer
       center={defaultPosition}
-      zoom={initialZoom}
+      zoom={initialZoomLevel}
       zoomControl={false}
       scrollWheelZoom={true}
-      style={{ height: "100vh", width: "100%" }}
       ref={mapRef}
-      className="w-full h-full"
+      className={cn("w-full h-full", className)}
       key="map-container"
     >
       <TileLayer

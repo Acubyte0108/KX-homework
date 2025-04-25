@@ -2,18 +2,23 @@ import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { cn } from "@/lib/utils";
 
 type MiniMapProps = {
   defaultPosition: L.LatLngExpression;
-  selectedPosition?: L.LatLngExpression; // Optional selected position
+  selectedPosition?: L.LatLngExpression;
+  initialZoomLevel?: number;
+  maxZoomLevel?: number;
+  className?: string;
 };
 
 export default function MiniMap({
   defaultPosition,
   selectedPosition,
-}: MiniMapProps) {
-  const defaultZoomLevel = 14;
-  const maxZoomLevel = 18;
+  initialZoomLevel = 14,
+  maxZoomLevel = 18,
+  className,
+}: MiniMapProps) {;
   const mapRef = useRef<L.Map | null>(null);
   const [hasSelectedBefore, setHasSelectedBefore] = useState(false);
 
@@ -47,7 +52,7 @@ export default function MiniMap({
     } else if (hasSelectedBefore) {
       // If we previously had a selection but now don't,
       // fly back to default position with default zoom
-      map.flyTo(defaultPosition, defaultZoomLevel, {
+      map.flyTo(defaultPosition, initialZoomLevel, {
         animate: true,
         duration: 1,
       });
@@ -65,10 +70,10 @@ export default function MiniMap({
   return (
     <MapContainer
       center={selectedPosition || defaultPosition}
-      zoom={selectedPosition ? maxZoomLevel : defaultZoomLevel}
+      zoom={selectedPosition ? maxZoomLevel : initialZoomLevel}
       zoomControl={false}
       scrollWheelZoom={false}
-      style={{ height: "300px", width: "100%" }}
+      className={cn("w-full h-full", className)}
       ref={mapRef}
     >
       <TileLayer
