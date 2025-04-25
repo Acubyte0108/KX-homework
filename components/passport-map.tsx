@@ -19,6 +19,7 @@ import { ChevronsDownUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Info } from "@/components/info";
+import { EventInfo } from "@/components/event-info";
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
@@ -95,82 +96,41 @@ export function PassportMap({ passport }: PassportMapProps) {
     }
   }, [isDesktop, wasDesktop, router, tab]);
 
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
-      {/* Conditionally render either desktop or mobile map */}
-      {/* {isDesktop ? (
-        <DesktopPassportMap
-          defaultPosition={defaultPosition}
-          passport={passport}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-      ) : (
-        <MobilePassportMap
-          defaultPosition={defaultPosition}
-          tab={tab}
-          passport={passport}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-      )} */}
-
-      <div className="flex h-screen w-full relative">
-        {/* <div
-          className={cn(
-            "z-0",
-            isDesktop && "lg:flex-grow w-3/5",
-            !isDesktop && tab === "map" && "h-full w-full"
-          )}
-        >
-          <MapWithNoSSR
-            defaultPosition={defaultPosition}
-            events={passport?.events || []}
-            selectedEvent={selectedEvent}
-            onSelectEvent={setSelectedEvent}
-          />
-        </div> */}
-
-        {/* Fix weird map center position on desktop and mobile when switching screen size */}
-        {isDesktop && (
-          <div className="lg:flex-grow w-3/5 z-0">
+      {/* New Style */}
+      <div className="flex flex-col h-full relative">
+        <div className="absolute w-full h-full">
+          {(isDesktop || (!isDesktop && tab === "map")) && (
             <MapWithNoSSR
               defaultPosition={defaultPosition}
               events={passport?.events || []}
               selectedEvent={selectedEvent}
               onSelectEvent={setSelectedEvent}
             />
-          </div>
-        )}
-        {!isDesktop && tab === "map" && (
-          <div className="h-full w-full z-0">
-            <MapWithNoSSR
-              defaultPosition={defaultPosition}
-              events={passport?.events || []}
-              selectedEvent={selectedEvent}
-              onSelectEvent={setSelectedEvent}
-            />
-          </div>
-        )}
-
-        <div
-          className={cn(
-            "z-0 bg-coral-blue text-white p-4 pt-20",
-            isDesktop &&
-              "lg:w-[450px] w-2/5 h-full overflow-auto flex flex-col gap-10",
-            !isDesktop && tab === "map"
-              ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient"
-              : "w-full h-full flex flex-col gap-10"
           )}
-        >
-          <Info
-            tab={tab}
-            passport={passport}
-            selectedEvent={selectedEvent}
-            setSelectedEvent={setSelectedEvent}
-          />
+        </div>
+
+        <div className="z-2 flex flex-grow pointer-events-none">
+          <div className="flex w-full justify-end">
+            {selectedEvent && (
+              <div className="fixed left-8 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
+                <EventInfo
+                  selectedEvent={selectedEvent}
+                  defaultPosition={defaultPosition}
+                  onClose={() => setSelectedEvent(null)}
+                />
+              </div>
+            )}
+            <div className="bg-coral-blue text-white p-4 pt-20 lg:w-[450px] overflow-auto flex flex-col gap-10 pointer-events-auto">
+              <Info
+                tab={tab}
+                passport={passport}
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
