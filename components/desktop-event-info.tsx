@@ -2,7 +2,7 @@ import { PassportEvent } from "@/components/passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, ChevronDown, MapPin, LockKeyhole } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -34,7 +34,7 @@ export function DesktopEventInfo({
   ];
 
   return (
-    <div className="fixed left-8 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-sm z-10 w-[400px] h-[calc(100vh-4rem)] overflow-auto text-white">
+    <div className="fixed left-8 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white">
       <div className="relative p-4">
         {/* X button in top right */}
         <button
@@ -64,22 +64,17 @@ export function DesktopEventInfo({
         </div>
 
         {/* Title */}
-        {/* <h1 className="text-2xl font-bold text-center mb-4">
-          {selectedEvent.title || `ทางม้าลายแยกเฉลิมบุรี (${selectedEvent.id})`}
-        </h1> */}
-        <h1 className="text-2xl font-bold text-center mb-4">
+        <h1 className="text-2xl font-bold text-left mb-4">
           {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent.id})`}
         </h1>
 
         {/* Availability info */}
-        {/* <div className="text-sm text-center mb-6">
-          Available to collect from {format(new Date(), "d MMM yyyy HH:mm")} to 
-          <br />
-          {format(new Date(new Date().setFullYear(new Date().getFullYear() + 1)), "d MMM yyyy HH:mm")}
-        </div> */}
+        <div className="text-left mb-6">
+          Available to collect from 4 Dec 2024 00:00 to 31 Dec 2025 23:59
+        </div>
 
         {/* Collect Now button */}
-        <button className="w-full mb-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-full">
+        <button className="w-full mb-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-full">
           Collect Now
         </button>
 
@@ -87,26 +82,17 @@ export function DesktopEventInfo({
         <Accordion
           type="single"
           collapsible
+          defaultValue="mini-map-info"
           className="mb-4 bg-white/20 backdrop-blur-none rounded-lg"
         >
-          <AccordionItem value="collect-info">
-            <AccordionTrigger className="px-4 py-3 text-lg font-medium">
+          <AccordionItem value="mini-map-info">
+            <AccordionTrigger className="px-4 text-lg font-medium hover:no-underline flex items-center">
               How to collect this collectible
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
               <div className="flex items-start gap-2 mb-4">
-                <div className="mt-1 bg-slate-700 rounded-full p-1">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                    <circle cx="12" cy="9" r="2.5" />
-                  </svg>
+                <div className="mt-1 bg-white/20 rounded-full p-1">
+                  <LockKeyhole size={16} />
                 </div>
                 <div>
                   <h3 className="font-medium">How to collect</h3>
