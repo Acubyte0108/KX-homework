@@ -40,6 +40,8 @@ export function Info({
     }
   }, [isFirstLoad, tab]);
 
+  const activeEventCount = `0/${passport?.events.length}`;
+
   return (
     <>
       <div className="flex flex-col justify-center items-center bg-white/20 backdrop-blur-none rounded-t-lg text-white w-full md:rounded-lg">
@@ -78,7 +80,7 @@ export function Info({
             </div>
             <div className="flex justify-between">
               <h2 className="text-lg font-bold">ฝาท่อ Chinatown เยาวราช</h2>
-              {!isOpen && <div className="text-lg text-emerald-400">0/18</div>}
+              {!isOpen && <div className="text-lg text-emerald-400">{activeEventCount}</div>}
             </div>
           </div>
 
@@ -92,7 +94,7 @@ export function Info({
                 เก็บให้ครบทั้ง 18 ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
-              <div className="text-4xl text-emerald-400 my-2">0/18</div>
+              <div className="text-4xl text-emerald-400 my-2">{activeEventCount}</div>
               <div className="text-sm text-gray-300">
                 Collectibles Collected
               </div>

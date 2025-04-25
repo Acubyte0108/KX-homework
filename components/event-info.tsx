@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 // Dynamically import MiniMap with no SSR
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
@@ -36,13 +37,15 @@ export function EventInfo({
     <div className="flex flex-col h-full">
       <div className="relative p-4">
         {/* X button in top right */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute top-2 right-2 p-2 rounded-full bg-white/20 backdrop-blur-none cursor-pointer"
+          className="absolute top-2 right-2 rounded-full bg-white/20 cursor-pointer"
+          variant="ghost"
+          size="icon"
           aria-label="Close"
         >
           <X className="h-6 w-6" />
-        </button>
+        </Button>
 
         {/* Badge Image */}
         <div className="flex items-center justify-center mb-6">
@@ -75,9 +78,13 @@ export function EventInfo({
         </div>
 
         {/* Collect Now button */}
-        <button className="w-full mb-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-full">
+        <Button 
+          className="w-full mb-6 bg-coral-pink hover:bg-coral-pink/80 rounded-full cursor-pointer" 
+          variant="default" 
+          size="lg"
+        >
           Collect Now
-        </button>
+        </Button>
 
         {/* How to collect accordion */}
         <Accordion
