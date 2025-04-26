@@ -14,6 +14,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
@@ -90,6 +91,10 @@ export function PassportMap({ passport }: PassportMapProps) {
       router.replace("/", { scroll: false });
     }
   }, [isDesktop, wasDesktop, router, tab]);
+
+  if (passport === null) {
+    return null;
+  }
 
   return (
     <>
