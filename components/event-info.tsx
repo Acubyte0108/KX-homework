@@ -44,7 +44,7 @@ export function EventInfo({
           size="icon"
           aria-label="Close"
         >
-          <X className="h-6 w-6" />
+          <X className="h-10 w-10" />
         </Button>
         <div className="flex items-center justify-center mb-6">
           <div className="rounded-full bg-slate-800 p-2 mt-4">
@@ -122,7 +122,7 @@ export function EventInfo({
             <AccordionTrigger className="px-4 text-lg font-medium hover:no-underline flex items-center">
               Collectible Preview
             </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4 flex flex-col gap-4">
+            <AccordionContent className="px-4 pb-4 flex flex-col gap-3">
               <div className="mb-2">
                 <div className="text-base mb-2">by</div>
                 <div className="flex items-center gap-3">
@@ -144,16 +144,16 @@ export function EventInfo({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <div className="text-sm">Collection</div>
-                <div className="font-medium text-xs">
-                  ฝาท่อ Chinatown เยาวราชย
+              <div className="flex flex-col">
+                <div className="font-bold">Collection</div>
+                <div className="font-medium text-sm">
+                  ฝาท่อ Chinatown เยาวราช
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <div className="text-sm">Preview Summary</div>
-                <div className="font-medium text-xs">
+              <div className="flex flex-col">
+                <div className="font-bold">Preview Summary</div>
+                <div className="font-medium text-sm">
                   มาอุ่นเครื่องทดลองกดเก็บของสะสมกันหน่อย
                   แค่คลิกเดียวก็เก็บของสะสมดิจิทัลได้เลย!
                   ฝาท่อนี้อยู่ก่อนถึงโรงพยาบาลเทียนฟ้ามูลนิธินิดเดียว
