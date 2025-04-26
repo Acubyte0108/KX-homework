@@ -5,7 +5,7 @@ import { DesktopPassportInfo } from "@/components/desktop-passport-info";
 import { PassportData, PassportEvent } from "@/components/passport-map";
 import { DesktopEventInfo } from "@/components/desktop-event-info";
 
-const MapWithNoSSR = dynamic(() => import("@/components/map"), {
+const MapWithNoSSR = dynamic(() => import("@/components/old-map"), {
   ssr: false,
 });
 

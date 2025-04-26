@@ -16,7 +16,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const MapWithNoSSR = dynamic(() => import("@/components/map"), {
+const MapWithNoSSR = dynamic(() => import("@/components/old-map"), {
   ssr: false,
 });
 
