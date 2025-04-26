@@ -57,7 +57,7 @@ export function EventInfo({
                 className="rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = `/placeholder.jpg`;
+                  target.src = "/placeholder.jpg";
                 }}
               />
             )}
@@ -140,7 +140,9 @@ export function EventInfo({
                       }}
                     />
                   </div>
-                  <span className="font-semibold text-lg">{partner?.display_name}</span>
+                  <span className="font-semibold text-lg">
+                    {partner?.display_name}
+                  </span>
                 </div>
               </div>
 

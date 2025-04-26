@@ -33,7 +33,7 @@ export function PassportInfo({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (isFirstLoad && tab === 'map') {
+    if (isFirstLoad && tab === "map") {
       setIsOpen(false);
       setIsFirstLoad(false);
     }
@@ -57,10 +57,8 @@ export function PassportInfo({
                       sizes="32px"
                       className="object-cover"
                       onError={(e) => {
-                        // Replace with a fallback on error
                         const target = e.target as HTMLImageElement;
-                        target.src =
-                          "https://placehold.co/200x200?text=Partner";
+                        target.src = "/placeholder.jpg";
                       }}
                     />
                   )}
@@ -79,7 +77,11 @@ export function PassportInfo({
             </div>
             <div className="flex justify-between">
               <h2 className="text-lg font-bold">ฝาท่อ Chinatown เยาวราช</h2>
-              {!isOpen && <div className="text-lg text-emerald-400">{activeEventCount}</div>}
+              {!isOpen && (
+                <div className="text-lg text-emerald-400">
+                  {activeEventCount}
+                </div>
+              )}
             </div>
           </div>
 
@@ -93,7 +95,9 @@ export function PassportInfo({
                 เก็บให้ครบทั้ง 18 ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
-              <div className="text-4xl text-emerald-400 my-2">{activeEventCount}</div>
+              <div className="text-4xl text-emerald-400 my-2">
+                {activeEventCount}
+              </div>
               <div className="text-sm text-gray-300">
                 Collectibles Collected
               </div>
@@ -164,9 +168,8 @@ export function PassportInfo({
                     sizes="96px"
                     className="object-cover rounded-full w-full h-full"
                     onError={(e) => {
-                      // Replace with a fallback on error
                       const target = e.target as HTMLImageElement;
-                      target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
+                      target.src = "/placeholder.jpg";
                     }}
                   />
                 </div>

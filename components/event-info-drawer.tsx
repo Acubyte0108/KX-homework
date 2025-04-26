@@ -37,7 +37,7 @@ export function EventInfoDrawer({
                     className="rounded-full"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = `/placeholder.jpg`;
+                      target.src = "/placeholder.jpg";
                     }}
                   />
                 )}
