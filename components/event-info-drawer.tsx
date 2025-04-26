@@ -20,6 +20,7 @@ export function EventInfoDrawer({
     <Drawer open={open} shouldScaleBackground={false} modal={false}>
       <DrawerContent
         overlayClassName="bg-transparent"
+        showDragIcon={false}
         className="bg-gray-900/20 backdrop-blur-lg flex flex-col"
       >
         <DrawerTitle className="hidden"></DrawerTitle>

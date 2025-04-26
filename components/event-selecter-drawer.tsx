@@ -18,6 +18,7 @@ export function EventSelecterDrawer({
     <Drawer open={open} shouldScaleBackground={false} modal={false}>
       <DrawerContent
         overlayClassName="bg-transparent"
+        showDragIcon={false}
         className="bg-gray-900/20 backdrop-blur-lg flex flex-col"
       >
         <DrawerHeader className="text-center">
