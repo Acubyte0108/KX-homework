@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import { MapPin } from "lucide-react";
+import MapMarkerIcon from "@/components/map-marker-icon";
 import { PassportEvent } from "@/components/passport-map";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +45,7 @@ export default function Map({
   // Create custom icon using SVG component
   const createCustomIcon = (color: string, size: number = 40) => {
     const iconMarkup = renderToStaticMarkup(
-      <MapPin color="#FFFFFF" size={size} fill={color} strokeWidth={1.5}/>
+      <MapMarkerIcon color={color} size={size} />
     );
 
     return L.divIcon({

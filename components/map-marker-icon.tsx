@@ -6,10 +6,8 @@ type MapMarkerIconProps = {
   className?: string;
 }
 
-// We're using this component with embedded SVG instead of the downloaded map-marker.svg
-// This gives us more flexibility for dynamic coloring and sizing
 const MapMarkerIcon: React.FC<MapMarkerIconProps> = ({ 
-  color = '#FF1493', // Default to pink color similar to the image
+  color = '#000000',
   size = 24, 
   className = ''
 }) => {
