@@ -1,9 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DesktopPassportMap } from "./desktop-passport-map";
-import { MobilePassportMap } from "./mobile-passport-map";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PassportInfo } from "@/components/passport-info";
+import { EventInfo } from "@/components/event-info";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import Image from "next/image";
+
+const MapWithNoSSR = dynamic(() => import("@/components/map"), {
+  ssr: false,
+});
 
 // Define the passport data types
 type PassportPartner = {
@@ -30,14 +44,17 @@ export type PassportData = {
 // Define main props for the wrapper
 type PassportMapProps = {
   passport: PassportData | null;
-  tab?: "grid" | "map";
 };
 
-export function PassportMap({ passport, tab }: PassportMapProps) {
+export function PassportMap({ passport }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
     null
   );
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const tab = searchParams.get("tab");
 
   // Default position for Bangkok - will be used initially
   const bangkokPosition: [number, number] = [13.7563, 100.5018];
@@ -45,11 +62,11 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
   const [defaultPosition, setDefaultPosition] =
     useState<[number, number]>(bangkokPosition);
 
-  // Set map position based on first available event
+  const [wasDesktop, setWasDesktop] = useState(isDesktop);
+
   useEffect(() => {
     if (passport && passport.events.length) {
       const firstEvent = passport.events[0];
-      // Check if the coordinates are valid before setting them
       if (
         firstEvent.location &&
         !isNaN(firstEvent.location.lat) &&
@@ -60,25 +77,102 @@ export function PassportMap({ passport, tab }: PassportMapProps) {
     }
   }, [passport]);
 
+  useEffect(() => {
+    // Handle screen size transitions
+    if (isDesktop !== wasDesktop) {
+      if (isDesktop || (!isDesktop && tab !== "map")) {
+        router.replace("/", { scroll: false });
+      }
+      setWasDesktop(isDesktop);
+    }
+    // Handle invalid state: map tab on desktop - navigate with page reload
+    else if (isDesktop && tab === "map") {
+      router.replace("/", { scroll: false });
+    }
+  }, [isDesktop, wasDesktop, router, tab]);
+
   return (
     <>
-      {/* Conditionally render either desktop or mobile map */}
-      {isDesktop ? (
-        <DesktopPassportMap
-          defaultPosition={defaultPosition}
-          passport={passport}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-      ) : (
-        <MobilePassportMap
-          defaultPosition={defaultPosition}
-          tab={tab}
-          passport={passport}
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-      )}
+      <div className="flex flex-col h-full relative">
+        <div className="absolute w-full h-full">
+          {(isDesktop || (!isDesktop && tab === "map")) && (
+            <MapWithNoSSR
+              defaultPosition={defaultPosition}
+              events={passport?.events || []}
+              selectedEvent={selectedEvent}
+              onSelectEvent={setSelectedEvent}
+            />
+          )}
+        </div>
+
+        <div className="z-2 flex flex-grow pointer-events-none">
+          <div className="flex w-full justify-end">
+            {isDesktop && selectedEvent && (
+              <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
+                <EventInfo
+                  selectedEvent={selectedEvent}
+                  defaultPosition={defaultPosition}
+                  onClose={() => setSelectedEvent(null)}
+                />
+              </div>
+            )}
+            <div
+              className={cn(
+                "bg-coral-blue text-white p-4 pt-20 pointer-events-auto",
+                isDesktop && "lg:w-[450px] overflow-auto flex flex-col gap-10",
+                !isDesktop && tab === "map"
+                  ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient"
+                  : "w-full h-full flex flex-col gap-10"
+              )}
+            >
+              <PassportInfo
+                tab={tab}
+                passport={passport}
+                selectedEvent={selectedEvent}
+                setSelectedEvent={setSelectedEvent}
+              />
+            </div>
+          </div>
+        </div>
+
+        {!isDesktop && tab === "map" && (
+          <Drawer open={true} shouldScaleBackground={false} modal={false}>
+            <DrawerContent
+              overlayClassName="bg-transparent"
+              className="bg-gray-900/20 backdrop-blur-md flex flex-col"
+            >
+              <DrawerHeader className="text-center">
+                <DrawerTitle className="text-white">
+                  Tab the slot or location pin to information
+                </DrawerTitle>
+              </DrawerHeader>
+              <div className="flex gap-4 w-full justify-center items-center mb-4">
+                {passport?.events.map((event) => (
+                  <div
+                    key={event.id}
+                    className="w-16 h-16 bg-transparent rounded-full relative"
+                    onClick={() => setSelectedEvent(event)}
+                  >
+                    <Image
+                      src={event.image_url}
+                      alt={`Event ${event.id}`}
+                      fill
+                      sizes="64px"
+                      className="object-contain w-full h-full rounded-full"
+                      placeholder="blur"
+                      blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' xmlns:v='https://vecta.io/nano'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FF6B6B'/%3E%3C/svg%3E"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder.jpg";
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </DrawerContent>
+          </Drawer>
+        )}
+      </div>
     </>
   );
 }

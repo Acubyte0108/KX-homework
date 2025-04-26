@@ -10,62 +10,66 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 // Dynamically import MiniMap with no SSR
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
 });
 
-type DesktopEventInfoProps = {
+type EventInfoProps = {
   selectedEvent: PassportEvent;
   defaultPosition: L.LatLngExpression;
   onClose: () => void;
 };
 
-export function DesktopEventInfo({
+export function EventInfo({
   selectedEvent,
   defaultPosition,
   onClose,
-}: DesktopEventInfoProps) {
-  // Prepare the selected position for the mini map
+}: EventInfoProps) {
   const selectedPosition: L.LatLngTuple = [
     selectedEvent.location.lat,
     selectedEvent.location.lng,
   ];
 
   return (
-    <div className="fixed left-8 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white">
+    <div className="flex flex-col h-full">
       <div className="relative p-4">
         {/* X button in top right */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute top-2 right-2 p-2 rounded-full bg-white/20 backdrop-blur-none cursor-pointer"
+          className="absolute top-2 right-2 rounded-full bg-white/20 cursor-pointer"
+          variant="ghost"
+          size="icon"
           aria-label="Close"
         >
           <X className="h-6 w-6" />
-        </button>
+        </Button>
 
         {/* Badge Image */}
         <div className="flex items-center justify-center mb-6">
           <div className="rounded-full bg-slate-800 p-2 mt-4">
-            <Image
-              src={selectedEvent.image_url}
-              alt={`Event ${selectedEvent.id}`}
-              width={250}
-              height={250}
-              className="rounded-full"
-              onError={(e) => {
-                // Replace with a fallback on error
-                const target = e.target as HTMLImageElement;
-                target.src = `https://placehold.co/250x250?text=Event+${selectedEvent.id}`;
-              }}
-            />
+            {selectedEvent && (
+              <Image
+                src={selectedEvent.image_url}
+                alt={`Event ${selectedEvent.id}`}
+                width={250}
+                height={250}
+                className="rounded-full"
+                onError={(e) => {
+                  // Replace with a fallback on error
+                  const target = e.target as HTMLImageElement;
+                  target.src = `https://placehold.co/250x250?text=Event+${selectedEvent.id}`;
+                }}
+              />
+            )}
           </div>
         </div>
 
         {/* Title */}
         <h1 className="text-2xl font-bold text-left mb-4">
-          {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent.id})`}
+          {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent?.id})`}
         </h1>
 
         {/* Availability info */}
@@ -74,9 +78,13 @@ export function DesktopEventInfo({
         </div>
 
         {/* Collect Now button */}
-        <button className="w-full mb-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-full">
+        <Button 
+          className="w-full mb-6 bg-coral-pink hover:bg-coral-pink/80 rounded-full cursor-pointer" 
+          variant="default" 
+          size="lg"
+        >
           Collect Now
-        </button>
+        </Button>
 
         {/* How to collect accordion */}
         <Accordion
@@ -107,7 +115,7 @@ export function DesktopEventInfo({
               <div className="h-48 w-full rounded-lg overflow-hidden">
                 <MiniMapWithNoSSR
                   defaultPosition={defaultPosition}
-                  selectedPosition={selectedPosition}
+                  selectedPosition={selectedPosition as L.LatLngTuple}
                 />
               </div>
             </AccordionContent>

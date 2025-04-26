@@ -109,7 +109,7 @@ export default function Map({
       zoomControl={false}
       scrollWheelZoom={true}
       ref={mapRef}
-      className={cn("w-full h-full", className)}
+      className={cn("w-full h-full z-0", className)}
       key="map-container"
     >
       <TileLayer

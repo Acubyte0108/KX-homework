@@ -29,14 +29,13 @@ function LoadingPassport() {
   );
 }
 
-export default async function Passport({ searchParams }: any) {
-  const query = await searchParams;
-
+export default async function Passport() {
   const passport = await getPassportData();
 
   return (
-    // <Suspense fallback={<LoadingPassport />}>
-        <PassportMap passport={passport} tab={query?.tab} />
-    // </Suspense>
+   
+    <div className="flex flex-col overflow-hidden h-screen">
+      <PassportMap passport={passport} />
+    </div>
   );
 }
