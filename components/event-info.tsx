@@ -1,15 +1,14 @@
-import { PassportEvent } from "@/components/passport-map";
+import { PassportEvent, PassportPartner } from "@/components/passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { X, ChevronDown, MapPin, LockKeyhole } from "lucide-react";
+import { X, LockKeyhole } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 // Dynamically import MiniMap with no SSR
@@ -18,12 +17,14 @@ const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
 });
 
 type EventInfoProps = {
+  partner: PassportPartner;
   selectedEvent: PassportEvent;
   defaultPosition: L.LatLngExpression;
   onClose: () => void;
 };
 
 export function EventInfo({
+  partner,
   selectedEvent,
   defaultPosition,
   onClose,
@@ -36,7 +37,6 @@ export function EventInfo({
   return (
     <div className="flex flex-col h-full">
       <div className="relative p-4">
-        {/* X button in top right */}
         <Button
           onClick={onClose}
           className="absolute top-2 right-2 rounded-full bg-white/20 cursor-pointer"
@@ -44,10 +44,8 @@ export function EventInfo({
           size="icon"
           aria-label="Close"
         >
-          <X className="h-6 w-6" />
+          <X className="h-10 w-10" />
         </Button>
-
-        {/* Badge Image */}
         <div className="flex items-center justify-center mb-6">
           <div className="rounded-full bg-slate-800 p-2 mt-4">
             {selectedEvent && (
@@ -58,35 +56,27 @@ export function EventInfo({
                 height={250}
                 className="rounded-full"
                 onError={(e) => {
-                  // Replace with a fallback on error
                   const target = e.target as HTMLImageElement;
-                  target.src = `https://placehold.co/250x250?text=Event+${selectedEvent.id}`;
+                  target.src = `/placeholder.jpg`;
                 }}
               />
             )}
           </div>
         </div>
 
-        {/* Title */}
         <h1 className="text-2xl font-bold text-left mb-4">
           {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent?.id})`}
         </h1>
-
-        {/* Availability info */}
         <div className="text-left mb-6">
           Available to collect from 4 Dec 2024 00:00 to 31 Dec 2025 23:59
         </div>
-
-        {/* Collect Now button */}
-        <Button 
-          className="w-full mb-6 bg-coral-pink hover:bg-coral-pink/80 rounded-full cursor-pointer" 
-          variant="default" 
+        <Button
+          className="w-full mb-6 bg-coral-pink hover:bg-coral-pink/80 rounded-full cursor-pointer"
+          variant="default"
           size="lg"
         >
           Collect Now
         </Button>
-
-        {/* How to collect accordion */}
         <Accordion
           type="single"
           collapsible
@@ -122,38 +112,60 @@ export function EventInfo({
           </AccordionItem>
         </Accordion>
 
-        {/* Collectible Preview accordion */}
-        {/* <Accordion type="single" collapsible>
-          <AccordionItem value="preview" className="border rounded-lg bg-slate-800 border-slate-700">
-            <AccordionTrigger className="px-4 py-3 text-lg font-medium">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="preview"
+          className="mb-4 bg-white/20 backdrop-blur-none rounded-lg"
+        >
+          <AccordionItem value="preview">
+            <AccordionTrigger className="px-4 text-lg font-medium hover:no-underline flex items-center">
               Collectible Preview
             </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <div className="mb-4">
-                <div className="text-sm text-slate-400 mb-1">by</div>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/default-avatar.png" />
-                    <AvatarFallback>C</AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">Coral</span>
+            <AccordionContent className="px-4 pb-4 flex flex-col gap-3">
+              <div className="mb-2">
+                <div className="text-base mb-2">by</div>
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-slate-800 p-0.5 overflow-hidden">
+                    <Image
+                      src={partner.profile_image || "/placeholder.jpg"}
+                      alt="Coral"
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                      onError={(e) => {
+                        // Replace with a fallback on error
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder.jpg";
+                      }}
+                    />
+                  </div>
+                  <span className="font-semibold text-lg">{partner.display_name}</span>
                 </div>
               </div>
-              
-              <div className="mb-4">
-                <div className="text-sm text-slate-400 mb-1">Collection</div>
-                <div className="font-medium">ผ่าตัด Chinatown เขาวราย</div>
+
+              <div className="flex flex-col">
+                <div className="font-bold">Collection</div>
+                <div className="font-medium text-sm">
+                  ฝาท่อ Chinatown เยาวราช
+                </div>
               </div>
-              
-              <div>
-                <div className="text-sm text-slate-400 mb-1">Preview Summary</div>
-                <div className="text-sm">
-                  {selectedEvent.description || "Collect this unique badge from Chinatown area."}
+
+              <div className="flex flex-col">
+                <div className="font-bold">Preview Summary</div>
+                <div className="font-medium text-sm">
+                  มาอุ่นเครื่องทดลองกดเก็บของสะสมกันหน่อย
+                  แค่คลิกเดียวก็เก็บของสะสมดิจิทัลได้เลย!
+                  ฝาท่อนี้อยู่ก่อนถึงโรงพยาบาลเทียนฟ้ามูลนิธินิดเดียว
+                  มาเริ่มเก็บกันเลย แต่ละลายนั้นมีความ
+                  <div className="text-coral-pink text-sm font-medium mt-2 text-right cursor-pointer">
+                    See more
+                  </div>
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
-        </Accordion> */}
+        </Accordion>
       </div>
     </div>
   );

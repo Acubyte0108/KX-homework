@@ -7,20 +7,14 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PassportInfo } from "@/components/passport-info";
 import { EventInfo } from "@/components/event-info";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import Image from "next/image";
+import { EventInfoDrawer } from "@/components/event-info-drawer";
+import { EventSelecterDrawer } from "@/components/event-selecter-drawer";
 
 const MapWithNoSSR = dynamic(() => import("@/components/map"), {
   ssr: false,
 });
 
-// Define the passport data types
-type PassportPartner = {
+export type PassportPartner = {
   display_name: string;
   profile_image: string;
 };
@@ -41,7 +35,6 @@ export type PassportData = {
   partner: PassportPartner;
 };
 
-// Define main props for the wrapper
 type PassportMapProps = {
   passport: PassportData | null;
 };
@@ -53,12 +46,9 @@ export function PassportMap({ passport }: PassportMapProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const tab = searchParams.get("tab");
 
-  // Default position for Bangkok - will be used initially
   const bangkokPosition: [number, number] = [13.7563, 100.5018];
-
   const [defaultPosition, setDefaultPosition] =
     useState<[number, number]>(bangkokPosition);
 
@@ -78,18 +68,20 @@ export function PassportMap({ passport }: PassportMapProps) {
   }, [passport]);
 
   useEffect(() => {
-    // Handle screen size transitions
     if (isDesktop !== wasDesktop) {
       if (isDesktop || (!isDesktop && tab !== "map")) {
         router.replace("/", { scroll: false });
       }
       setWasDesktop(isDesktop);
     }
-    // Handle invalid state: map tab on desktop - navigate with page reload
     else if (isDesktop && tab === "map") {
       router.replace("/", { scroll: false });
     }
   }, [isDesktop, wasDesktop, router, tab]);
+
+  if (passport === null) {
+    return null;
+  }
 
   return (
     <>
@@ -110,6 +102,7 @@ export function PassportMap({ passport }: PassportMapProps) {
             {isDesktop && selectedEvent && (
               <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
                 <EventInfo
+                  partner={passport.partner}
                   selectedEvent={selectedEvent}
                   defaultPosition={defaultPosition}
                   onClose={() => setSelectedEvent(null)}
@@ -135,43 +128,17 @@ export function PassportMap({ passport }: PassportMapProps) {
           </div>
         </div>
 
-        {!isDesktop && tab === "map" && (
-          <Drawer open={true} shouldScaleBackground={false} modal={false}>
-            <DrawerContent
-              overlayClassName="bg-transparent"
-              className="bg-gray-900/20 backdrop-blur-md flex flex-col"
-            >
-              <DrawerHeader className="text-center">
-                <DrawerTitle className="text-white">
-                  Tab the slot or location pin to information
-                </DrawerTitle>
-              </DrawerHeader>
-              <div className="flex gap-4 w-full justify-center items-center mb-4">
-                {passport?.events.map((event) => (
-                  <div
-                    key={event.id}
-                    className="w-16 h-16 bg-transparent rounded-full relative"
-                    onClick={() => setSelectedEvent(event)}
-                  >
-                    <Image
-                      src={event.image_url}
-                      alt={`Event ${event.id}`}
-                      fill
-                      sizes="64px"
-                      className="object-contain w-full h-full rounded-full"
-                      placeholder="blur"
-                      blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' xmlns:v='https://vecta.io/nano'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FF6B6B'/%3E%3C/svg%3E"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.jpg";
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </DrawerContent>
-          </Drawer>
-        )}
+        <EventInfoDrawer
+          open={!isDesktop && !!selectedEvent}
+          selectedEvent={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+
+        <EventSelecterDrawer
+          open={!isDesktop && !selectedEvent && tab === "map"}
+          passport={passport}
+          setSelectedEvent={setSelectedEvent}
+        />
       </div>
     </>
   );
