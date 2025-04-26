@@ -102,7 +102,7 @@ export function PassportMap({ passport }: PassportMapProps) {
             {isDesktop && selectedEvent && (
               <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
                 <EventInfo
-                  partner={passport.partner}
+                  partner={passport?.partner}
                   selectedEvent={selectedEvent}
                   defaultPosition={defaultPosition}
                   onClose={() => setSelectedEvent(null)}

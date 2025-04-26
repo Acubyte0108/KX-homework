@@ -128,7 +128,7 @@ export function EventInfo({
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-slate-800 p-0.5 overflow-hidden">
                     <Image
-                      src={partner.profile_image || "/placeholder.jpg"}
+                      src={partner?.profile_image || "/placeholder.jpg"}
                       alt="Coral"
                       width={32}
                       height={32}
@@ -140,7 +140,7 @@ export function EventInfo({
                       }}
                     />
                   </div>
-                  <span className="font-semibold text-lg">{partner.display_name}</span>
+                  <span className="font-semibold text-lg">{partner?.display_name}</span>
                 </div>
               </div>
 
