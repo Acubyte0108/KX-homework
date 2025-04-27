@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
