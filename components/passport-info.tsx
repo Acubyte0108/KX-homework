@@ -5,7 +5,6 @@ import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect } from "react";
 import {
   Collapsible,
@@ -14,6 +13,7 @@ import {
 } from "@radix-ui/react-collapsible";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { NextImage } from "@/components/next-image";
 
 type PassportInfoProps = {
   tab?: string | null;
@@ -50,16 +50,12 @@ export function PassportInfo({
               <div className="flex items-center gap-4">
                 <div className="h-8 w-8 rounded-full overflow-hidden relative">
                   {passport?.partner.profile_image && (
-                    <Image
+                    <NextImage
                       src={passport?.partner.profile_image}
                       alt={passport?.partner.display_name}
                       fill
                       sizes="32px"
                       className="object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.jpg";
-                      }}
                     />
                   )}
                 </div>
@@ -92,7 +88,7 @@ export function PassportInfo({
                 พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ
                 เริ่มต้นด้วยการเปิดการเข้าถึงโลเคชั่น
                 แล้วกดเก็บของสะสมดิจิทัลตามสายฝาท่อที่ไปถึงได้เลย ทันที
-                เก็บให้ครบทั้ง 18 ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
+                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
               <div className="text-4xl text-emerald-400 my-2">
@@ -161,16 +157,12 @@ export function PassportInfo({
                 onClick={() => setSelectedEvent(event)}
               >
                 <div className="relative w-full h-full">
-                  <Image
+                  <NextImage
                     src={event.image_url}
                     alt={`Event ${event.id}`}
                     fill
                     sizes="96px"
                     className="object-cover rounded-full w-full h-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.jpg";
-                    }}
                   />
                 </div>
                 <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm z-10">

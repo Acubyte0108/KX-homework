@@ -1,7 +1,6 @@
 import { PassportEvent, PassportPartner } from "@/components/passport-map";
 import L from "leaflet";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { X, LockKeyhole } from "lucide-react";
 import {
   Accordion,
@@ -10,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { NextImage } from "@/components/next-image";
 
 // Dynamically import MiniMap with no SSR
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
@@ -49,16 +49,12 @@ export function EventInfo({
         <div className="flex items-center justify-center mb-6">
           <div className="rounded-full bg-slate-800 p-2 mt-4">
             {selectedEvent && (
-              <Image
+              <NextImage
                 src={selectedEvent.image_url}
                 alt={`Event ${selectedEvent.id}`}
                 width={250}
                 height={250}
                 className="rounded-full"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/placeholder.jpg";
-                }}
               />
             )}
           </div>
@@ -127,17 +123,12 @@ export function EventInfo({
                 <div className="text-base mb-2">by</div>
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-slate-800 p-0.5 overflow-hidden">
-                    <Image
+                    <NextImage
                       src={partner?.profile_image || "/placeholder.jpg"}
                       alt="Coral"
                       width={32}
                       height={32}
                       className="rounded-full"
-                      onError={(e) => {
-                        // Replace with a fallback on error
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.jpg";
-                      }}
                     />
                   </div>
                   <span className="font-semibold text-lg">

@@ -2,8 +2,8 @@ import { PassportEvent } from "./passport-map";
 import { Drawer, DrawerTitle } from "./ui/drawer";
 import { DrawerContent } from "./ui/drawer";
 import { Button } from "./ui/button";
-import Image from "next/image";
 import { X } from "lucide-react";
+import { NextImage } from "./next-image";
 
 type EventInfoDrawerProps = {
   open: boolean;
@@ -29,16 +29,12 @@ export function EventInfoDrawer({
             <div className="flex items-center justify-center">
               <div className="rounded-full bg-slate-800 p-2 mt-4">
                 {selectedEvent && (
-                  <Image
+                  <NextImage
                     src={selectedEvent.image_url}
                     alt={`Event ${selectedEvent.id}`}
                     width={128}
                     height={128}
                     className="rounded-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.jpg";
-                    }}
                   />
                 )}
               </div>
