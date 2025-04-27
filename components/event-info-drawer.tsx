@@ -37,7 +37,7 @@ export function EventInfoDrawer({
           <div className="flex justify-center items-center gap-6">
             <div className="flex items-center justify-center">
               <div 
-                className="relative rounded-full overflow-hidden"
+                className="relative"
                 style={imageStyle ? { width: imageStyle.width, height: imageStyle.height } : { width: '5rem', height: '5rem' }}
               >
                 {selectedEvent && (

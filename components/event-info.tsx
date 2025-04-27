@@ -46,13 +46,13 @@ export function EventInfo({
           <X className="h-10 w-10" />
         </Button>
         <div className="flex items-center justify-center mb-6">
-          <div className="rounded-full p-2 mt-4">
+          <div className="w-full h-full mt-4">
             {selectedEvent && (
               <NextImage
                 src={selectedEvent.image_url}
                 alt={`Event ${selectedEvent.id}`}
-                width={200}
-                height={200}
+                width={300}
+                height={300}
               />
             )}
           </div>

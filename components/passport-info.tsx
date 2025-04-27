@@ -35,13 +35,12 @@ export function PassportInfo({
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const pathname = usePathname();
   const gridItemRef = useRef<HTMLDivElement>(null);
-  
-  // Use the useResizeObserver hook from usehooks-ts
+
   const resizeObserverResult = useResizeObserver({
     ref: gridItemRef as React.RefObject<HTMLElement>,
-    box: 'border-box',
+    box: "border-box",
   });
-  
+
   const width = resizeObserverResult?.width || 0;
   const height = resizeObserverResult?.height || 0;
 
@@ -52,7 +51,6 @@ export function PassportInfo({
     }
   }, [isFirstLoad, tab]);
 
-  // Report dimensions to parent component when they change
   useEffect(() => {
     if (width && height && onGridItemResize) {
       onGridItemResize({ width, height });
@@ -107,7 +105,8 @@ export function PassportInfo({
                 พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ
                 เริ่มต้นด้วยการเปิดการเข้าถึงโลเคชั่น
                 แล้วกดเก็บของสะสมดิจิทัลตามสายฝาท่อที่ไปถึงได้เลย ทันที
-                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
+                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา
+                และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
               <div className="text-4xl text-emerald-400 my-2">
@@ -169,22 +168,19 @@ export function PassportInfo({
             return (
               <div
                 key={event.id}
-                // Apply ref to the first item to measure dimensions
                 ref={index === 0 ? gridItemRef : null}
                 className={cn(
-                  "aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
+                  "relative w-full h-full aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
                   isSelected && "ring-2 ring-white"
                 )}
                 onClick={() => setSelectedEvent(event)}
               >
-                <div className="relative w-full h-full rounded-full">
-                  <NextImage
-                    src={event.image_url}
-                    alt={`Event ${event.id}`}
-                    fill
-                    sizes="96px"
-                  />
-                </div>
+                <NextImage
+                  src={event.image_url}
+                  alt={`Event ${event.id}`}
+                  fill
+                  sizes="96px"
+                />
               </div>
             );
           })}
