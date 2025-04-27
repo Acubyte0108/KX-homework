@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { NextImage } from "@/components/next-image";
 
-// Dynamically import MiniMap with no SSR
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
 });
@@ -47,14 +46,13 @@ export function EventInfo({
           <X className="h-10 w-10" />
         </Button>
         <div className="flex items-center justify-center mb-6">
-          <div className="rounded-full bg-slate-800 p-2 mt-4">
+          <div className="rounded-full p-2 mt-4">
             {selectedEvent && (
               <NextImage
                 src={selectedEvent.image_url}
                 alt={`Event ${selectedEvent.id}`}
-                width={250}
-                height={250}
-                className="rounded-full"
+                width={200}
+                height={200}
               />
             )}
           </div>
@@ -63,9 +61,9 @@ export function EventInfo({
         <h1 className="text-2xl font-bold text-left mb-4">
           {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent?.id})`}
         </h1>
-        <div className="text-left mb-6">
+        <h2 className="text-left mb-6">
           Available to collect from 4 Dec 2024 00:00 to 31 Dec 2025 23:59
-        </div>
+        </h2>
         <Button
           className="w-full mb-6 bg-coral-pink hover:bg-coral-pink/80 rounded-full cursor-pointer"
           variant="default"
@@ -122,13 +120,12 @@ export function EventInfo({
               <div className="mb-2">
                 <div className="text-base mb-2">by</div>
                 <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-slate-800 p-0.5 overflow-hidden">
+                  <div className="relative rounded-full w-8 h-8 p-0.5 overflow-hidden">
                     <NextImage
                       src={partner?.profile_image || "/placeholder.jpg"}
                       alt="Coral"
-                      width={32}
-                      height={32}
-                      className="rounded-full"
+                      fill
+                      sizes="32px"
                     />
                   </div>
                   <span className="font-semibold text-lg">
@@ -138,22 +135,20 @@ export function EventInfo({
               </div>
 
               <div className="flex flex-col">
-                <div className="font-bold">Collection</div>
-                <div className="font-medium text-sm">
-                  ฝาท่อ Chinatown เยาวราช
-                </div>
+                <h3 className="font-bold">Collection</h3>
+                <p className="font-medium text-sm">ฝาท่อ Chinatown เยาวราช</p>
               </div>
 
               <div className="flex flex-col">
-                <div className="font-bold">Preview Summary</div>
-                <div className="font-medium text-sm">
+                <h3 className="font-bold">Preview Summary</h3>
+                <p className="font-medium text-sm">
                   มาอุ่นเครื่องทดลองกดเก็บของสะสมกันหน่อย
                   แค่คลิกเดียวก็เก็บของสะสมดิจิทัลได้เลย!
                   ฝาท่อนี้อยู่ก่อนถึงโรงพยาบาลเทียนฟ้ามูลนิธินิดเดียว
                   มาเริ่มเก็บกันเลย แต่ละลายนั้นมีความ
-                  <div className="text-coral-pink text-sm font-medium mt-2 text-right cursor-pointer">
-                    See more
-                  </div>
+                </p>
+                <div className="text-coral-pink text-sm font-medium mt-2 text-right cursor-pointer">
+                  See more
                 </div>
               </div>
             </AccordionContent>
