@@ -30,7 +30,7 @@ export function EventSelecterDrawer({
           {passport?.events.map((event) => (
             <div
               key={event.id}
-              className="w-16 h-16 bg-transparent rounded-full relative"
+              className="w-16 h-16 bg-transparent relative"
               onClick={() => setSelectedEvent(event)}
             >
               <NextImage

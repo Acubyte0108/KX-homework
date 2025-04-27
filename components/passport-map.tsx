@@ -48,11 +48,15 @@ export function PassportMap({ passport }: PassportMapProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const bangkokPosition: [number, number] = [13.7563, 100.5018];
-  const [defaultPosition, setDefaultPosition] =
-    useState<[number, number]>(bangkokPosition);
+  const [defaultPosition, setDefaultPosition] = useState<
+    [number, number] | null
+  >(null);
 
   const [wasDesktop, setWasDesktop] = useState(isDesktop);
+  const [gridItemDimensions, setGridItemDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   useEffect(() => {
     if (passport && passport.events.length) {
@@ -73,9 +77,8 @@ export function PassportMap({ passport }: PassportMapProps) {
         router.replace("/", { scroll: false });
       }
       setWasDesktop(isDesktop);
-    }
-    else if (isDesktop && tab === "map") {
-      router.replace("/", { scroll: false });
+    } else if (isDesktop && tab === "map") {
+      router.replace("/");
     }
   }, [isDesktop, wasDesktop, router, tab]);
 
@@ -87,7 +90,7 @@ export function PassportMap({ passport }: PassportMapProps) {
     <>
       <div className="flex flex-col h-full relative">
         <div className="absolute w-full h-full">
-          {(isDesktop || (!isDesktop && tab === "map")) && (
+          {(isDesktop || (!isDesktop && tab === "map")) && defaultPosition && (
             <MapWithNoSSR
               defaultPosition={defaultPosition}
               events={passport?.events || []}
@@ -98,21 +101,21 @@ export function PassportMap({ passport }: PassportMapProps) {
         </div>
 
         <div className="z-2 flex flex-grow pointer-events-none">
-          <div className="flex w-full justify-end">
-            {isDesktop && selectedEvent && (
-              <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
+          <div className="flex w-full justify-between">
+            <div className="relative ml-0 hidden w-full h-fit pointer-events-auto self-start sm:sticky sm:block sm:ml-4 sm:max-w-[420px] sm:w-3/10 sm:pb-4 sm:pt-20">
+              {isDesktop && selectedEvent && defaultPosition && (
                 <EventInfo
                   partner={passport?.partner}
                   selectedEvent={selectedEvent}
                   defaultPosition={defaultPosition}
                   onClose={() => setSelectedEvent(null)}
                 />
-              </div>
-            )}
+              )}
+            </div>
             <div
               className={cn(
                 "bg-coral-blue text-white p-4 pt-20 pointer-events-auto",
-                isDesktop && "lg:w-[450px] overflow-auto flex flex-col gap-10",
+                isDesktop && "md:max-w-[450px] sm:w-3/10 overflow-auto flex flex-col gap-10",
                 !isDesktop && tab === "map"
                   ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-coral-gradient"
                   : "w-full h-full flex flex-col gap-10"
@@ -123,6 +126,7 @@ export function PassportMap({ passport }: PassportMapProps) {
                 passport={passport}
                 selectedEvent={selectedEvent}
                 setSelectedEvent={setSelectedEvent}
+                onGridItemResize={setGridItemDimensions}
               />
             </div>
           </div>
@@ -132,6 +136,7 @@ export function PassportMap({ passport }: PassportMapProps) {
           open={!isDesktop && !!selectedEvent}
           selectedEvent={selectedEvent}
           onClose={() => setSelectedEvent(null)}
+          gridItemDimensions={gridItemDimensions}
         />
 
         <EventSelecterDrawer

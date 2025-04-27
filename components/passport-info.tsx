@@ -5,7 +5,7 @@ import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -14,12 +14,14 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NextImage } from "@/components/next-image";
+import { useResizeObserver } from "usehooks-ts";
 
 type PassportInfoProps = {
   tab?: string | null;
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
+  onGridItemResize?: (dimensions: { width: number; height: number }) => void;
 };
 
 export function PassportInfo({
@@ -27,10 +29,20 @@ export function PassportInfo({
   passport,
   selectedEvent,
   setSelectedEvent,
+  onGridItemResize,
 }: PassportInfoProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const pathname = usePathname();
+  const gridItemRef = useRef<HTMLDivElement>(null);
+
+  const resizeObserverResult = useResizeObserver({
+    ref: gridItemRef as React.RefObject<HTMLElement>,
+    box: "border-box",
+  });
+
+  const width = resizeObserverResult?.width || 0;
+  const height = resizeObserverResult?.height || 0;
 
   useEffect(() => {
     if (isFirstLoad && tab === "map") {
@@ -38,6 +50,12 @@ export function PassportInfo({
       setIsFirstLoad(false);
     }
   }, [isFirstLoad, tab]);
+
+  useEffect(() => {
+    if (width && height && onGridItemResize) {
+      onGridItemResize({ width, height });
+    }
+  }, [width, height, onGridItemResize]);
 
   const activeEventCount = `0/${passport?.events.length}`;
 
@@ -87,7 +105,8 @@ export function PassportInfo({
                 พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ
                 เริ่มต้นด้วยการเปิดการเข้าถึงโลเคชั่น
                 แล้วกดเก็บของสะสมดิจิทัลตามสายฝาท่อที่ไปถึงได้เลย ทันที
-                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
+                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา
+                และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
               <div className="text-4xl text-emerald-400 my-2">
@@ -112,7 +131,6 @@ export function PassportInfo({
                 e.preventDefault();
                 return;
               }
-              setSelectedEvent(null);
             }}
           >
             <Link href={pathname}>
@@ -145,25 +163,24 @@ export function PassportInfo({
 
       {!tab && (
         <div className="grid grid-cols-4 gap-2">
-          {passport?.events.map((event) => {
+          {passport?.events.map((event, index) => {
             const isSelected = selectedEvent && event.id === selectedEvent.id;
             return (
               <div
                 key={event.id}
+                ref={index === 0 ? gridItemRef : null}
                 className={cn(
-                  "aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
+                  "relative w-full h-full aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
                   isSelected && "ring-2 ring-white"
                 )}
                 onClick={() => setSelectedEvent(event)}
               >
-                <div className="relative w-full h-full rounded-full">
-                  <NextImage
-                    src={event.image_url}
-                    alt={`Event ${event.id}`}
-                    fill
-                    sizes="96px"
-                  />
-                </div>
+                <NextImage
+                  src={event.image_url}
+                  alt={`Event ${event.id}`}
+                  fill
+                  sizes="96px"
+                />
               </div>
             );
           })}

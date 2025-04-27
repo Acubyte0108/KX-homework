@@ -26,13 +26,9 @@ export default function Map({
   onSelectEvent,
   className,
 }: MapProps) {
-  // Map reference
   const mapRef = useRef<L.Map | null>(null);
-
-  // Track previous selected event to avoid unnecessary flyTo
   const prevSelectedEventIdRef = useRef<string | null>(null);
 
-  // Set up Leaflet default icons
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -42,7 +38,6 @@ export default function Map({
     });
   }, []);
 
-  // Create custom icon using SVG component
   const createCustomIcon = (color: string, size: number = 40) => {
     const iconMarkup = renderToStaticMarkup(
       <MapMarkerIcon color={color} size={size} />
@@ -56,18 +51,15 @@ export default function Map({
     });
   };
 
-  // Memoize icons
   const defaultIcon = useMemo(() => createCustomIcon("#000000", 40), []);
   const selectedIcon = useMemo(() => createCustomIcon("#FF1493", 60), []);
 
-  // Handle marker click
   const handleMarkerClick = (event: PassportEvent) => {
     if (onSelectEvent) {
       onSelectEvent(event);
     }
   };
 
-  // Handle selected event changes
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -76,7 +68,6 @@ export default function Map({
     if (selectedEvent) {
       const currentSelectedId = selectedEvent.id;
 
-      // Only fly if the selected event has changed
       if (prevSelectedEventIdRef.current !== currentSelectedId) {
         map.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
@@ -87,12 +78,9 @@ export default function Map({
           }
         );
 
-        // Update the ref to track the current selectedEvent
         prevSelectedEventIdRef.current = currentSelectedId;
       }
     } else if (!selectedEvent && prevSelectedEventIdRef.current !== null) {
-      // Reset when deselected - fly back to default position and reset zoom
-
       map.flyTo(defaultPosition, initialZoomLevel, {
         animate: true,
         duration: 1,

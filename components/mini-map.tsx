@@ -18,12 +18,11 @@ export default function MiniMap({
   initialZoomLevel = 14,
   maxZoomLevel = 18,
   className,
-}: MiniMapProps) {;
+}: MiniMapProps) {
   const mapRef = useRef<L.Map | null>(null);
-  const [hasSelectedBefore, setHasSelectedBefore] = useState(false);
+  const prevSelectedPositionRef = useRef<L.LatLngExpression | null>(null);
 
   useEffect(() => {
-    // Set up default icon
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: "/leaflet/marker-icon.png",
@@ -32,34 +31,33 @@ export default function MiniMap({
     });
   }, []);
 
-  // Handle position changes
   useEffect(() => {
     if (!mapRef.current) return;
 
     const map = mapRef.current;
 
     if (selectedPosition) {
-      // Zoom to selected position with max zoom level
-      map.flyTo(selectedPosition, maxZoomLevel, {
-        animate: true,
-        duration: 1,
-      });
+      if (
+        JSON.stringify(prevSelectedPositionRef.current) !==
+        JSON.stringify(selectedPosition)
+      ) {
+        map.flyTo(selectedPosition, maxZoomLevel, {
+          animate: true,
+          duration: 1,
+        });
 
-      // Track that we've had a selection before
-      if (!hasSelectedBefore) {
-        setHasSelectedBefore(true);
+        prevSelectedPositionRef.current = selectedPosition;
       }
-    } else if (hasSelectedBefore) {
-      // If we previously had a selection but now don't,
-      // fly back to default position with default zoom
+    } else if (!selectedPosition && prevSelectedPositionRef.current !== null) {
       map.flyTo(defaultPosition, initialZoomLevel, {
         animate: true,
         duration: 1,
       });
-    }
-  }, [selectedPosition, defaultPosition, hasSelectedBefore]);
 
-  // Circle overlay style
+      prevSelectedPositionRef.current = null;
+    }
+  }, [selectedPosition, defaultPosition, initialZoomLevel, maxZoomLevel]);
+
   const circleStyle = {
     fillColor: "#FF1493",
     fillOpacity: 0.2,
@@ -81,7 +79,6 @@ export default function MiniMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* Only show marker and circle when selectedPosition exists */}
       {selectedPosition && (
         <>
           <Marker position={selectedPosition} />
