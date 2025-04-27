@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NextImage } from "@/components/next-image";
+import { useResizeObserver } from "usehooks-ts";
 
 type PassportInfoProps = {
   tab?: string | null;
@@ -34,6 +35,15 @@ export function PassportInfo({
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const pathname = usePathname();
   const gridItemRef = useRef<HTMLDivElement>(null);
+  
+  // Use the useResizeObserver hook from usehooks-ts
+  const resizeObserverResult = useResizeObserver({
+    ref: gridItemRef as React.RefObject<HTMLElement>,
+    box: 'border-box',
+  });
+  
+  const width = resizeObserverResult?.width || 0;
+  const height = resizeObserverResult?.height || 0;
 
   useEffect(() => {
     if (isFirstLoad && tab === "map") {
@@ -42,28 +52,12 @@ export function PassportInfo({
     }
   }, [isFirstLoad, tab]);
 
-  // Track and report grid item dimensions
+  // Report dimensions to parent component when they change
   useEffect(() => {
-    if (gridItemRef.current && onGridItemResize) {
-      const updateDimensions = () => {
-        const { offsetWidth, offsetHeight } = gridItemRef.current!;
-        onGridItemResize({ width: offsetWidth, height: offsetHeight });
-      };
-      
-      // Initial measurement
-      updateDimensions();
-      
-      // Set up resize observer to track changes
-      const resizeObserver = new ResizeObserver(updateDimensions);
-      resizeObserver.observe(gridItemRef.current);
-      
-      return () => {
-        if (gridItemRef.current) {
-          resizeObserver.unobserve(gridItemRef.current);
-        }
-      };
+    if (width && height && onGridItemResize) {
+      onGridItemResize({ width, height });
     }
-  }, [onGridItemResize]);
+  }, [width, height, onGridItemResize]);
 
   const activeEventCount = `0/${passport?.events.length}`;
 
