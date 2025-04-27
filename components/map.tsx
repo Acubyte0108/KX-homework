@@ -68,7 +68,6 @@ export default function Map({
     if (selectedEvent) {
       const currentSelectedId = selectedEvent.id;
 
-      // Only fly if the selected event has changed
       if (prevSelectedEventIdRef.current !== currentSelectedId) {
         map.flyTo(
           [selectedEvent.location.lat, selectedEvent.location.lng],
