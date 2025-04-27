@@ -4,6 +4,7 @@ import { DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { NextImage } from "@/components/next-image";
+import { getThemeGradient } from "@/lib/utils";
 
 type EventInfoDrawerProps = {
   open: boolean;
@@ -30,7 +31,8 @@ export function EventInfoDrawer({
       <DrawerContent
         overlayClassName="bg-transparent"
         showDragIcon={false}
-        className="bg-gray-900/20 backdrop-blur-lg flex flex-col"
+        className="bg-transparent backdrop-blur-[30px] flex flex-col"
+        style={{ backgroundImage: getThemeGradient("#00294D", "top") }}
       >
         <DrawerTitle className="hidden"></DrawerTitle>
         <div className="flex flex-col gap-4 p-4">
@@ -52,7 +54,7 @@ export function EventInfoDrawer({
               </div>
             </div>
             <div className="flex flex-col gap-2 text-white">
-              <h2 className="text-left font-semibold">
+              <h2 className="text-left font-bold">
                 {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent?.id})`}
               </h2>
               <p className="text-left text-xs">
