@@ -9,13 +9,22 @@ type EventInfoDrawerProps = {
   open: boolean;
   selectedEvent: PassportEvent | null;
   onClose: () => void;
+  gridItemDimensions?: { width: number; height: number } | null;
 };
 
 export function EventInfoDrawer({
   open,
   selectedEvent,
   onClose,
+  gridItemDimensions,
 }: EventInfoDrawerProps) {
+  const imageStyle = gridItemDimensions 
+    ? { 
+        width: gridItemDimensions.width, 
+        height: gridItemDimensions.height 
+      } 
+    : undefined;
+
   return (
     <Drawer open={open} shouldScaleBackground={false} modal={false}>
       <DrawerContent
@@ -27,13 +36,16 @@ export function EventInfoDrawer({
         <div className="flex flex-col gap-4 p-4">
           <div className="flex justify-center items-center gap-6">
             <div className="flex items-center justify-center">
-              <div className="relative rounded-full w-20 h-20">
+              <div 
+                className="relative rounded-full overflow-hidden"
+                style={imageStyle ? { width: imageStyle.width, height: imageStyle.height } : { width: '5rem', height: '5rem' }}
+              >
                 {selectedEvent && (
                   <NextImage
                     src={selectedEvent.image_url}
                     alt={`Event ${selectedEvent.id}`}
                     fill
-                    sizes="96px"
+                    sizes={gridItemDimensions ? `${gridItemDimensions.width}px` : "96px"}
                     className="object-cover w-full h-full"
                   />
                 )}

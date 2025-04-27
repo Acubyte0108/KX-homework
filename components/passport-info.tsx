@@ -5,7 +5,7 @@ import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,6 +20,7 @@ type PassportInfoProps = {
   passport: PassportData | null;
   selectedEvent: PassportEvent | null;
   setSelectedEvent: (event: PassportEvent | null) => void;
+  onGridItemResize?: (dimensions: { width: number; height: number }) => void;
 };
 
 export function PassportInfo({
@@ -27,10 +28,12 @@ export function PassportInfo({
   passport,
   selectedEvent,
   setSelectedEvent,
+  onGridItemResize,
 }: PassportInfoProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const pathname = usePathname();
+  const gridItemRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isFirstLoad && tab === "map") {
@@ -38,6 +41,29 @@ export function PassportInfo({
       setIsFirstLoad(false);
     }
   }, [isFirstLoad, tab]);
+
+  // Track and report grid item dimensions
+  useEffect(() => {
+    if (gridItemRef.current && onGridItemResize) {
+      const updateDimensions = () => {
+        const { offsetWidth, offsetHeight } = gridItemRef.current!;
+        onGridItemResize({ width: offsetWidth, height: offsetHeight });
+      };
+      
+      // Initial measurement
+      updateDimensions();
+      
+      // Set up resize observer to track changes
+      const resizeObserver = new ResizeObserver(updateDimensions);
+      resizeObserver.observe(gridItemRef.current);
+      
+      return () => {
+        if (gridItemRef.current) {
+          resizeObserver.unobserve(gridItemRef.current);
+        }
+      };
+    }
+  }, [onGridItemResize]);
 
   const activeEventCount = `0/${passport?.events.length}`;
 
@@ -145,11 +171,13 @@ export function PassportInfo({
 
       {!tab && (
         <div className="grid grid-cols-4 gap-2">
-          {passport?.events.map((event) => {
+          {passport?.events.map((event, index) => {
             const isSelected = selectedEvent && event.id === selectedEvent.id;
             return (
               <div
                 key={event.id}
+                // Apply ref to the first item to measure dimensions
+                ref={index === 0 ? gridItemRef : null}
                 className={cn(
                   "aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
                   isSelected && "ring-2 ring-white"

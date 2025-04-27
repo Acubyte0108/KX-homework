@@ -53,6 +53,7 @@ export function PassportMap({ passport }: PassportMapProps) {
     useState<[number, number]>(bangkokPosition);
 
   const [wasDesktop, setWasDesktop] = useState(isDesktop);
+  const [gridItemDimensions, setGridItemDimensions] = useState<{ width: number; height: number } | null>(null);
 
   useEffect(() => {
     if (passport && passport.events.length) {
@@ -123,6 +124,7 @@ export function PassportMap({ passport }: PassportMapProps) {
                 passport={passport}
                 selectedEvent={selectedEvent}
                 setSelectedEvent={setSelectedEvent}
+                onGridItemResize={setGridItemDimensions}
               />
             </div>
           </div>
@@ -132,6 +134,7 @@ export function PassportMap({ passport }: PassportMapProps) {
           open={!isDesktop && !!selectedEvent}
           selectedEvent={selectedEvent}
           onClose={() => setSelectedEvent(null)}
+          gridItemDimensions={gridItemDimensions}
         />
 
         <EventSelecterDrawer
