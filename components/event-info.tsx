@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { NextImage } from "@/components/next-image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
   ssr: false,
@@ -34,17 +35,16 @@ export function EventInfo({
   ];
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="relative p-4">
-        <Button
-          onClick={onClose}
-          className="absolute top-2 right-2 rounded-full bg-white/20 cursor-pointer"
-          variant="ghost"
-          size="icon"
-          aria-label="Close"
-        >
-          <X className="h-10 w-10" />
-        </Button>
+    <div className="relative w-full flex flex-col p-4 py-16 items-center rounded-2xl h-fit min-h-[25rem] sm:max-h-[calc(100vh-6rem)] bg-coral-blue text-white">
+      <Button
+        onClick={onClose}
+        className="absolute top-4 right-4 rounded-full bg-white/20 cursor-pointer size-8"
+        variant="ghost"
+        size="icon"
+      >
+        <X className="h-10 w-10" />
+      </Button>
+      <div className="flex flex-col px-4 overflow-auto">
         <div className="flex items-center justify-center mb-6">
           <div className="w-full h-full mt-4">
             {selectedEvent && (
@@ -146,7 +146,7 @@ export function EventInfo({
                   ฝาท่อนี้อยู่ก่อนถึงโรงพยาบาลเทียนฟ้ามูลนิธินิดเดียว
                   มาเริ่มเก็บกันเลย แต่ละลายนั้นมีความ
                 </p>
-                <div className="text-coral-pink text-sm font-medium mt-2 text-right cursor-pointer">
+                <div className="text-coral-pink text-sm font-bold mt-2 text-right cursor-pointer">
                   See more
                 </div>
               </div>
