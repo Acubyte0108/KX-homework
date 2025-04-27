@@ -132,7 +132,6 @@ export function PassportInfo({
                 e.preventDefault();
                 return;
               }
-              setSelectedEvent(null);
             }}
           >
             <Link href={pathname}>
