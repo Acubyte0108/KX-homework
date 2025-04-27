@@ -23,7 +23,6 @@ export default function MiniMap({
   const [hasSelectedBefore, setHasSelectedBefore] = useState(false);
 
   useEffect(() => {
-    // Set up default icon
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: "/leaflet/marker-icon.png",
@@ -32,14 +31,12 @@ export default function MiniMap({
     });
   }, []);
 
-  // Handle position changes
   useEffect(() => {
     if (!mapRef.current) return;
 
     const map = mapRef.current;
 
     if (selectedPosition) {
-      // Zoom to selected position with max zoom level
       map.flyTo(selectedPosition, maxZoomLevel, {
         animate: true,
         duration: 1,
@@ -59,7 +56,6 @@ export default function MiniMap({
     }
   }, [selectedPosition, defaultPosition, hasSelectedBefore]);
 
-  // Circle overlay style
   const circleStyle = {
     fillColor: "#FF1493",
     fillOpacity: 0.2,
