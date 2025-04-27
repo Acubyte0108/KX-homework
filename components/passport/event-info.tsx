@@ -1,4 +1,4 @@
-import { PassportEvent, PassportPartner } from "@/components/passport-map";
+import { PassportEvent, PassportPartner } from "@/components/passport/passport-content";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import { X, LockKeyhole } from "lucide-react";
@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { NextImage } from "@/components/next-image";
 
-const MiniMapWithNoSSR = dynamic(() => import("@/components/mini-map"), {
+const MiniMapWithNoSSR = dynamic(() => import("@/components/passport/mini-map"), {
   ssr: false,
 });
 

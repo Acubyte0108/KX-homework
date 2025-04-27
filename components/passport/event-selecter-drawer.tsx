@@ -1,7 +1,7 @@
-import { PassportData, PassportEvent } from "./passport-map";
-import { Drawer, DrawerHeader, DrawerTitle } from "./ui/drawer";
-import { DrawerContent } from "./ui/drawer";
-import { NextImage } from "./next-image";
+import { PassportData, PassportEvent } from "@/components/passport/passport-content";
+import { Drawer, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { DrawerContent } from "@/components/ui/drawer";
+import { NextImage } from "@/components/next-image";
 
 type EventSelecterDrawerProps = {
   open: boolean;
