@@ -38,9 +38,6 @@ export function EventSelecterDrawer({
                 alt={`Event ${event.id}`}
                 fill
                 sizes="64px"
-                className="object-cover w-full h-full rounded-full"
-                placeholder="blur"
-                blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' xmlns:v='https://vecta.io/nano'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FF6B6B'/%3E%3C/svg%3E"
               />
             </div>
           ))}

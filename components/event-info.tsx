@@ -95,7 +95,6 @@ export function EventInfo({
                 </div>
               </div>
 
-              {/* Mini Map inside accordion */}
               <div className="h-48 w-full rounded-lg overflow-hidden">
                 <MiniMapWithNoSSR
                   defaultPosition={defaultPosition}

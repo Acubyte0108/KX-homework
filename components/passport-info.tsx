@@ -55,7 +55,6 @@ export function PassportInfo({
                       alt={passport?.partner.display_name}
                       fill
                       sizes="32px"
-                      className="object-cover"
                     />
                   )}
                 </div>
@@ -151,22 +150,19 @@ export function PassportInfo({
             return (
               <div
                 key={event.id}
-                className={`relative aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90 ${
-                  isSelected ? "ring-2 ring-white" : ""
-                }`}
+                className={cn(
+                  "aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
+                  isSelected && "ring-2 ring-white"
+                )}
                 onClick={() => setSelectedEvent(event)}
               >
-                <div className="relative w-full h-full">
+                <div className="relative w-full h-full rounded-full">
                   <NextImage
                     src={event.image_url}
                     alt={`Event ${event.id}`}
                     fill
                     sizes="96px"
-                    className="object-cover rounded-full w-full h-full"
                   />
-                </div>
-                <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm z-10">
-                  {event.id}
                 </div>
               </div>
             );
