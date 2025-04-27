@@ -48,9 +48,8 @@ export function PassportMap({ passport }: PassportMapProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const bangkokPosition: [number, number] = [13.7563, 100.5018];
   const [defaultPosition, setDefaultPosition] =
-    useState<[number, number]>(bangkokPosition);
+    useState<[number, number] | null>(null);
 
   const [wasDesktop, setWasDesktop] = useState(isDesktop);
   const [gridItemDimensions, setGridItemDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -76,7 +75,7 @@ export function PassportMap({ passport }: PassportMapProps) {
       setWasDesktop(isDesktop);
     }
     else if (isDesktop && tab === "map") {
-      router.replace("/", { scroll: false });
+      router.replace("/");
     }
   }, [isDesktop, wasDesktop, router, tab]);
 
@@ -88,7 +87,7 @@ export function PassportMap({ passport }: PassportMapProps) {
     <>
       <div className="flex flex-col h-full relative">
         <div className="absolute w-full h-full">
-          {(isDesktop || (!isDesktop && tab === "map")) && (
+          {(isDesktop || (!isDesktop && tab === "map")) && defaultPosition && (
             <MapWithNoSSR
               defaultPosition={defaultPosition}
               events={passport?.events || []}
@@ -100,7 +99,7 @@ export function PassportMap({ passport }: PassportMapProps) {
 
         <div className="z-2 flex flex-grow pointer-events-none">
           <div className="flex w-full justify-end">
-            {isDesktop && selectedEvent && (
+            {isDesktop && selectedEvent && defaultPosition && (
               <div className="fixed left-4 top-8 bg-coral-blue shadow-lg rounded-lg p-4 max-w-[420px] z-10 h-[calc(100vh-4rem)] overflow-auto text-white pointer-events-auto">
                 <EventInfo
                   partner={passport?.partner}
