@@ -2,8 +2,8 @@ import { PassportEvent } from "./passport-map";
 import { Drawer, DrawerTitle } from "./ui/drawer";
 import { DrawerContent } from "./ui/drawer";
 import { Button } from "./ui/button";
-import Image from "next/image";
 import { X } from "lucide-react";
+import { NextImage } from "./next-image";
 
 type EventInfoDrawerProps = {
   open: boolean;
@@ -20,35 +20,32 @@ export function EventInfoDrawer({
     <Drawer open={open} shouldScaleBackground={false} modal={false}>
       <DrawerContent
         overlayClassName="bg-transparent"
+        showDragIcon={false}
         className="bg-gray-900/20 backdrop-blur-lg flex flex-col"
       >
         <DrawerTitle className="hidden"></DrawerTitle>
         <div className="flex flex-col gap-4 p-4">
           <div className="flex justify-center items-center gap-6">
             <div className="flex items-center justify-center">
-              <div className="rounded-full bg-slate-800 p-2 mt-4">
+              <div className="relative rounded-full w-20 h-20">
                 {selectedEvent && (
-                  <Image
+                  <NextImage
                     src={selectedEvent.image_url}
                     alt={`Event ${selectedEvent.id}`}
-                    width={128}
-                    height={128}
-                    className="rounded-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `/placeholder.jpg`;
-                    }}
+                    fill
+                    sizes="96px"
+                    className="object-cover w-full h-full"
                   />
                 )}
               </div>
             </div>
             <div className="flex flex-col gap-2 text-white">
-              <h1 className="text-lg text-left font-semibold">
+              <h2 className="text-left font-semibold">
                 {`ทางม้าลายแยกเฉลิมบุรี (${selectedEvent?.id})`}
-              </h1>
-              <div className="text-left text-sm">
+              </h2>
+              <p className="text-left text-xs">
                 Available to collect from 4 Dec 2024 00:00 to 31 Dec 2025 23:59
-              </div>
+              </p>
             </div>
             <Button
               onClick={onClose}

@@ -5,7 +5,6 @@ import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect } from "react";
 import {
   Collapsible,
@@ -14,6 +13,7 @@ import {
 } from "@radix-ui/react-collapsible";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { NextImage } from "@/components/next-image";
 
 type PassportInfoProps = {
   tab?: string | null;
@@ -33,7 +33,7 @@ export function PassportInfo({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (isFirstLoad && tab === 'map') {
+    if (isFirstLoad && tab === "map") {
       setIsOpen(false);
       setIsFirstLoad(false);
     }
@@ -50,18 +50,11 @@ export function PassportInfo({
               <div className="flex items-center gap-4">
                 <div className="h-8 w-8 rounded-full overflow-hidden relative">
                   {passport?.partner.profile_image && (
-                    <Image
+                    <NextImage
                       src={passport?.partner.profile_image}
                       alt={passport?.partner.display_name}
                       fill
                       sizes="32px"
-                      className="object-cover"
-                      onError={(e) => {
-                        // Replace with a fallback on error
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "https://placehold.co/200x200?text=Partner";
-                      }}
                     />
                   )}
                 </div>
@@ -79,7 +72,11 @@ export function PassportInfo({
             </div>
             <div className="flex justify-between">
               <h2 className="text-lg font-bold">ฝาท่อ Chinatown เยาวราช</h2>
-              {!isOpen && <div className="text-lg text-emerald-400">{activeEventCount}</div>}
+              {!isOpen && (
+                <div className="text-lg text-emerald-400">
+                  {activeEventCount}
+                </div>
+              )}
             </div>
           </div>
 
@@ -90,10 +87,12 @@ export function PassportInfo({
                 พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ
                 เริ่มต้นด้วยการเปิดการเข้าถึงโลเคชั่น
                 แล้วกดเก็บของสะสมดิจิทัลตามสายฝาท่อที่ไปถึงได้เลย ทันที
-                เก็บให้ครบทั้ง 18 ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
+                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
               </p>
 
-              <div className="text-4xl text-emerald-400 my-2">{activeEventCount}</div>
+              <div className="text-4xl text-emerald-400 my-2">
+                {activeEventCount}
+              </div>
               <div className="text-sm text-gray-300">
                 Collectibles Collected
               </div>
@@ -151,27 +150,19 @@ export function PassportInfo({
             return (
               <div
                 key={event.id}
-                className={`relative aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90 ${
-                  isSelected ? "ring-2 ring-white" : ""
-                }`}
+                className={cn(
+                  "aspect-square bg-coral-blue rounded-md cursor-pointer hover:opacity-90",
+                  isSelected && "ring-2 ring-white"
+                )}
                 onClick={() => setSelectedEvent(event)}
               >
-                <div className="relative w-full h-full">
-                  <Image
+                <div className="relative w-full h-full rounded-full">
+                  <NextImage
                     src={event.image_url}
                     alt={`Event ${event.id}`}
                     fill
                     sizes="96px"
-                    className="object-cover rounded-full w-full h-full"
-                    onError={(e) => {
-                      // Replace with a fallback on error
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://placehold.co/200x200?text=Event+${event.id}`;
-                    }}
                   />
-                </div>
-                <div className="absolute bottom-1 right-1 bg-sidebar-primary text-sidebar-primary-foreground text-xs px-1.5 py-0.5 rounded-sm z-10">
-                  {event.id}
                 </div>
               </div>
             );

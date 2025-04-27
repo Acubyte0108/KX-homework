@@ -1,7 +1,7 @@
 import { PassportData, PassportEvent } from "./passport-map";
 import { Drawer, DrawerHeader, DrawerTitle } from "./ui/drawer";
 import { DrawerContent } from "./ui/drawer";
-import Image from "next/image";
+import { NextImage } from "./next-image";
 
 type EventSelecterDrawerProps = {
   open: boolean;
@@ -18,6 +18,7 @@ export function EventSelecterDrawer({
     <Drawer open={open} shouldScaleBackground={false} modal={false}>
       <DrawerContent
         overlayClassName="bg-transparent"
+        showDragIcon={false}
         className="bg-gray-900/20 backdrop-blur-lg flex flex-col"
       >
         <DrawerHeader className="text-center">
@@ -32,18 +33,11 @@ export function EventSelecterDrawer({
               className="w-16 h-16 bg-transparent rounded-full relative"
               onClick={() => setSelectedEvent(event)}
             >
-              <Image
+              <NextImage
                 src={event.image_url}
                 alt={`Event ${event.id}`}
                 fill
                 sizes="64px"
-                className="object-contain w-full h-full rounded-full"
-                placeholder="blur"
-                blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' xmlns:v='https://vecta.io/nano'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FF6B6B'/%3E%3C/svg%3E"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/placeholder.jpg";
-                }}
               />
             </div>
           ))}
