@@ -133,15 +133,6 @@
   }
 }
 
-/* @utility bg-coral-gradient {
-  background-image: linear-gradient(
-    rgb(0, 41, 77) 0%,
-    rgba(0, 41, 77, 0.85) 36.06%,
-    rgba(0, 41, 77, 0.8) 89.34%,
-    rgba(0, 41, 77, 0) 100%
-  );
-} */
-
 @layer utilities {
   .bg-coral-gradient {
     background-image: linear-gradient(
