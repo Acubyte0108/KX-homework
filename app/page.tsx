@@ -6,7 +6,7 @@ async function getPassportData() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
     // Add a fake delay
-    // await new Promise((resolve) => setTimeout(resolve, 1500));
+    // await new Promise((resolve) => setTimeout(resolve, 2500));
 
     const response = await fetch(`${baseUrl}/passport.json`, {
       next: {
@@ -28,9 +28,5 @@ async function getPassportData() {
 
 export default async function Passport() {
   const passport = await getPassportData();
-  return (
-    <div className="flex flex-col overflow-hidden h-screen">
-      <PassportMap passport={passport} />
-    </div>
-  )
+  return <PassportMap passport={passport} />;
 }
