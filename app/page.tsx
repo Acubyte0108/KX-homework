@@ -1,4 +1,4 @@
-import { PassportMap } from "@/components/passport-map";
+import { PassportContent } from "@/components/passport/passport-content";
 import { notFound } from "next/navigation";
 
 async function getPassportData() {
@@ -28,5 +28,5 @@ async function getPassportData() {
 
 export default async function Passport() {
   const passport = await getPassportData();
-  return <PassportMap passport={passport} />;
+  return <PassportContent passport={passport} />;
 }

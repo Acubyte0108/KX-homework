@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import MapMarkerIcon from "@/components/map-marker-icon";
-import { PassportEvent } from "@/components/passport-map";
+import MapMarkerIcon from "@/components/passport/map-marker-icon";
+import { PassportEvent } from "@/components/passport/passport-content";
 import { cn } from "@/lib/utils";
 
 type MapProps = {

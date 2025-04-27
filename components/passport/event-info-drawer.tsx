@@ -1,9 +1,9 @@
-import { PassportEvent } from "./passport-map";
-import { Drawer, DrawerTitle } from "./ui/drawer";
-import { DrawerContent } from "./ui/drawer";
-import { Button } from "./ui/button";
+import { PassportEvent } from "@/components/passport/passport-content";
+import { Drawer, DrawerTitle } from "@/components/ui/drawer";
+import { DrawerContent } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { NextImage } from "./next-image";
+import { NextImage } from "@/components/next-image";
 
 type EventInfoDrawerProps = {
   open: boolean;

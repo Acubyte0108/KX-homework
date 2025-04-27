@@ -5,12 +5,12 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PassportInfo } from "@/components/passport-info";
-import { EventInfo } from "@/components/event-info";
-import { EventInfoDrawer } from "@/components/event-info-drawer";
-import { EventSelecterDrawer } from "@/components/event-selecter-drawer";
+import { PassportInfo } from "@/components/passport/passport-info";
+import { EventInfo } from "@/components/passport/event-info";
+import { EventInfoDrawer } from "@/components/passport/event-info-drawer";
+import { EventSelecterDrawer } from "@/components/passport/event-selecter-drawer";
 
-const MapWithNoSSR = dynamic(() => import("@/components/map"), {
+const MapWithNoSSR = dynamic(() => import("@/components/passport/map"), {
   ssr: false,
 });
 
@@ -39,7 +39,7 @@ type PassportMapProps = {
   passport: PassportData | null;
 };
 
-export function PassportMap({ passport }: PassportMapProps) {
+export function PassportContent({ passport }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
     null
   );
