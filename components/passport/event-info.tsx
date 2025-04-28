@@ -1,4 +1,7 @@
-import { PassportEvent, PassportPartner } from "@/components/passport/passport-content";
+import {
+  PassportEvent,
+  PassportPartner,
+} from "@/components/passport/passport-content";
 import L from "leaflet";
 import dynamic from "next/dynamic";
 import { X, LockKeyhole } from "lucide-react";
@@ -11,9 +14,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { NextImage } from "@/components/next-image";
 
-const MiniMapWithNoSSR = dynamic(() => import("@/components/passport/mini-map"), {
-  ssr: false,
-});
+const MiniMapWithNoSSR = dynamic(
+  () => import("@/components/passport/mini-map"),
+  {
+    ssr: false,
+  }
+);
 
 type EventInfoProps = {
   partner: PassportPartner;
@@ -78,7 +84,10 @@ export function EventInfo({
             className="mb-4 bg-white/20 backdrop-blur-none rounded-lg"
           >
             <AccordionItem value="mini-map-info">
-              <AccordionTrigger className="px-4 text-lg font-medium hover:no-underline flex items-center">
+              <AccordionTrigger
+                className="px-4 text-lg font-medium hover:no-underline flex items-center"
+                iconClassName="text-white size-8"
+              >
                 How to collect this collectible
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4">
@@ -112,7 +121,10 @@ export function EventInfo({
             className="mb-4 bg-white/20 backdrop-blur-none rounded-lg"
           >
             <AccordionItem value="preview">
-              <AccordionTrigger className="px-4 text-lg font-medium hover:no-underline flex items-center">
+              <AccordionTrigger
+                className="px-4 text-lg font-medium hover:no-underline flex items-center"
+                iconClassName="text-white size-8"
+              >
                 Collectible Preview
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 flex flex-col gap-3">
