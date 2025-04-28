@@ -79,7 +79,9 @@ export function PassportInfo({
                     />
                   )}
                 </div>
-                <span className="text-lg font-bold">Coral</span>
+                <span className="text-lg font-bold">
+                  {passport?.partner.display_name}
+                </span>
               </div>
               <CollapsibleTrigger asChild>
                 <button className="w-8 h-8 flex items-center justify-center">
@@ -92,7 +94,7 @@ export function PassportInfo({
               </CollapsibleTrigger>
             </div>
             <div className="flex justify-between">
-              <h2 className="text-lg font-bold">ฝาท่อ Chinatown เยาวราช</h2>
+              <h2 className="text-lg font-bold">{passport?.name}</h2>
               {!isOpen && (
                 <div className="text-lg text-emerald-400">
                   {activeEventCount}
@@ -104,19 +106,16 @@ export function PassportInfo({
           <CollapsibleContent>
             <div className="p-4 pt-0">
               <p className="text-sm mb-4 leading-relaxed">
-                มาสำรวจฝาท่อ Chinatown เยาวราช ดูงานศิลปะ
-                พร้อมศึกษาประวัติศาสตร์ของย่านนี้กันเถอะ
-                เริ่มต้นด้วยการเปิดการเข้าถึงโลเคชั่น
-                แล้วกดเก็บของสะสมดิจิทัลตามสายฝาท่อที่ไปถึงได้เลย ทันที
-                เก็บให้ครบทั้ง <span>{passport?.events.length}</span> ฝา
-                และแสดงตัวเป็นสุดยอดแฟนเยาวราชกันเลย!
+                {passport?.description}
               </p>
 
-              <div className="text-4xl text-emerald-400 my-2">
-                {activeEventCount}
-              </div>
-              <div className="text-sm text-gray-300">
-                Collectibles Collected
+              <div className="flex items-center gap-4">
+                <div className="text-4xl font-bold text-emerald-400">
+                  {activeEventCount}
+                </div>
+                <div className="text-sm text-white">
+                  Collectibles <br /> Collected
+                </div>
               </div>
             </div>
           </CollapsibleContent>
