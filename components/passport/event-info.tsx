@@ -134,7 +134,7 @@ export function EventInfo({
                     <div className="relative rounded-full w-8 h-8 p-0.5 overflow-hidden">
                       <NextImage
                         src={partner?.profile_image || "/placeholder.jpg"}
-                        alt="Coral"
+                        alt={partner?.display_name}
                         fill
                         sizes="32px"
                       />
