@@ -18,12 +18,8 @@ vi.mock('usehooks-ts', () => ({
 
 // Mock data
 const mockPassport = {
-  name: "ฝาท่อ Chinatown เยาวราช",
-  description: "This is a sample passport description",
-  partner: {
-    display_name: "Test Partner",
-    profile_image: "/test-profile.jpg"
-  },
+  name: "Test Passport",
+  description: "This is a test passport",
   events: [
     {
       id: "event-1",
@@ -41,7 +37,11 @@ const mockPassport = {
         lng: 100.5025
       }
     }
-  ]
+  ],
+  partner: {
+    display_name: "Test Partner",
+    profile_image: "/partner.jpg"
+  }
 };
 
 // Mock the NextImage component
