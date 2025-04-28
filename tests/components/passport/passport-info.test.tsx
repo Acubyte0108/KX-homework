@@ -1,39 +1,44 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '../../utils';
 import { PassportInfo } from '@/components/passport/passport-info';
+import { usePathname } from 'next/navigation';
+
+// Mock next/navigation
+vi.mock('next/navigation', () => ({
+  usePathname: vi.fn(() => '/test-path')
+}));
+
+// Mock usehooks-ts
+vi.mock('usehooks-ts', () => ({
+  useResizeObserver: vi.fn(() => ({
+    width: 100,
+    height: 100
+  }))
+}));
 
 // Mock data
 const mockPassport = {
-  id: "passport-1",
   name: "ฝาท่อ Chinatown เยาวราช",
-  title: "Sample Passport",
   description: "This is a sample passport description",
   partner: {
-    id: "partner-1",
     display_name: "Test Partner",
     profile_image: "/test-profile.jpg"
   },
   events: [
     {
       id: "event-1",
-      title: "Event 1",
-      description: "Event 1 Description",
       image_url: "/event1.jpg",
       location: {
         lat: 13.7386,
-        lng: 100.5133,
-        address: "Event 1 Address"
+        lng: 100.5133
       }
     },
     {
       id: "event-2",
-      title: "Event 2",
-      description: "Event 2 Description",
       image_url: "/event2.jpg",
       location: {
         lat: 13.7566,
-        lng: 100.5025,
-        address: "Event 2 Address"
+        lng: 100.5025
       }
     }
   ]
@@ -46,11 +51,31 @@ vi.mock('@/components/next-image', () => ({
   )
 }));
 
+// Mock the Lucide icons
+vi.mock('lucide-react', () => ({
+  ChevronsUpDown: () => <div data-testid="chevrons-up-down">ChevronUpDown</div>,
+  ChevronsDownUp: () => <div data-testid="chevrons-down-up">ChevronDownUp</div>,
+  Grid: () => <div data-testid="grid-icon">Grid</div>,
+  MapPin: () => <div data-testid="map-pin">MapPin</div>
+}));
+
+// Mock Link component
+vi.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ href, children, ...props }: { href: string, children: React.ReactNode }) => (
+    <a href={href} {...props} data-testid="next-link">{children}</a>
+  )
+}));
+
 describe('PassportInfo Component', () => {
   const mockSetSelectedEvent = vi.fn();
+  const mockOnGridItemResize = vi.fn();
+  const mockPathname = '/test-path';
   
   beforeEach(() => {
     mockSetSelectedEvent.mockClear();
+    mockOnGridItemResize.mockClear();
+    (usePathname as any).mockReturnValue(mockPathname);
   });
 
   it('renders correctly with passport data', () => {
@@ -59,11 +84,12 @@ describe('PassportInfo Component', () => {
         passport={mockPassport}
         selectedEvent={null}
         setSelectedEvent={mockSetSelectedEvent}
+        onGridItemResize={mockOnGridItemResize}
       />
     );
     
     // Check partner name is rendered
-    expect(screen.getByText('Coral')).toBeInTheDocument();
+    expect(screen.getByText('Test Partner')).toBeInTheDocument();
     
     // Check if the passport description is rendered
     expect(screen.getByText(/Collectibles Collected/i)).toBeInTheDocument();
@@ -83,11 +109,12 @@ describe('PassportInfo Component', () => {
     );
     
     // The map tab should be active
-    const mapTab = screen.getByText(/Map View/i).closest('a');
+    const mapLinks = screen.getAllByTestId('next-link');
+    const mapTab = mapLinks.find(link => link.textContent?.includes('Map View'));
     expect(mapTab).toHaveClass('border-b-white');
     
     // Grid tab should not be active
-    const gridTab = screen.getByText(/Grid View/i).closest('a');
+    const gridTab = mapLinks.find(link => link.textContent?.includes('Grid View'));
     expect(gridTab).not.toHaveClass('border-b-white');
   });
 
@@ -103,9 +130,10 @@ describe('PassportInfo Component', () => {
     // Content is initially expanded
     expect(screen.getByText(/Collectibles Collected/i)).toBeInTheDocument();
     
-    // Click the toggle button
-    const toggleButton = screen.getByRole('button', { name: '' }); // No accessible name for the button
-    fireEvent.click(toggleButton);
+    // Click the toggle button - now using data-testid to find the containing button
+    const toggleIcon = screen.getByTestId('chevrons-down-up');
+    const toggleButton = toggleIcon.closest('button');
+    fireEvent.click(toggleButton!);
     
     // Content should be collapsed
     expect(screen.queryByText(/Collectibles Collected/i)).not.toBeInTheDocument();
@@ -120,9 +148,10 @@ describe('PassportInfo Component', () => {
       />
     );
     
-    // Find the first event item and click it
-    const eventItems = screen.getAllByTestId('next-image').slice(1); // Skip profile image
-    fireEvent.click(eventItems[0]);
+    // Find the first event item and click it (need to find the container since it has the click handler)
+    const eventImages = screen.getAllByTestId('next-image').slice(1); // Skip profile image
+    const eventContainer = eventImages[0].closest('div');
+    fireEvent.click(eventContainer!);
     
     // The setSelectedEvent should be called with the first event
     expect(mockSetSelectedEvent).toHaveBeenCalledWith(mockPassport.events[0]);
@@ -138,9 +167,8 @@ describe('PassportInfo Component', () => {
     );
     
     // Find the event items
-    const eventContainers = screen.getAllByTestId('next-image')
-      .slice(1) // Skip profile image
-      .map(img => img.closest('div'));
+    const eventImages = screen.getAllByTestId('next-image').slice(1); // Skip profile image
+    const eventContainers = eventImages.map(img => img.closest('div'));
     
     // The first event should have the selected styling
     expect(eventContainers[0]).toHaveClass('ring-2');
@@ -148,5 +176,55 @@ describe('PassportInfo Component', () => {
     
     // Other events should not have selected styling
     expect(eventContainers[1]).not.toHaveClass('ring-2');
+  });
+
+  it('calls onGridItemResize with proper dimensions when resize is observed', () => {
+    render(
+      <PassportInfo 
+        passport={mockPassport}
+        selectedEvent={null}
+        setSelectedEvent={mockSetSelectedEvent}
+        onGridItemResize={mockOnGridItemResize}
+      />
+    );
+    
+    // The useResizeObserver hook is mocked to return {width: 100, height: 100}
+    // so we expect onGridItemResize to be called with these values
+    expect(mockOnGridItemResize).toHaveBeenCalledWith({ width: 100, height: 100 });
+  });
+
+  it('handles tab navigation correctly', () => {
+    render(
+      <PassportInfo 
+        passport={mockPassport}
+        selectedEvent={null}
+        setSelectedEvent={mockSetSelectedEvent}
+      />
+    );
+
+    // Find the tabs
+    const links = screen.getAllByTestId('next-link');
+    
+    // Verify Grid View tab links to pathname
+    const gridTab = links.find(link => link.textContent?.includes('Grid View'));
+    expect(gridTab).toHaveAttribute('href', mockPathname);
+    
+    // Verify Map View tab links to pathname with tab=map query param
+    const mapTab = links.find(link => link.textContent?.includes('Map View'));
+    expect(mapTab).toHaveAttribute('href', `${mockPathname}?tab=map`);
+  });
+
+  it('sets isOpen to false on first load when tab is map', () => {
+    render(
+      <PassportInfo 
+        tab="map"
+        passport={mockPassport}
+        selectedEvent={null}
+        setSelectedEvent={mockSetSelectedEvent}
+      />
+    );
+    
+    // The content should be collapsed
+    expect(screen.queryByText(/Collectibles Collected/i)).not.toBeInTheDocument();
   });
 }); 
