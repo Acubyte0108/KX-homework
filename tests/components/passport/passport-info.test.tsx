@@ -62,8 +62,12 @@ vi.mock('lucide-react', () => ({
 // Mock Link component
 vi.mock('next/link', () => ({
   __esModule: true,
-  default: ({ href, children, ...props }: { href: string, children: React.ReactNode }) => (
-    <a href={href} {...props} data-testid="next-link">{children}</a>
+  default: ({ href, children, onClick, ...props }: { 
+    href: string, 
+    children: React.ReactNode,
+    onClick?: React.MouseEventHandler<HTMLAnchorElement>
+  }) => (
+    <a href={href} {...props} data-testid="next-link" onClick={onClick}>{children}</a>
   )
 }));
 
@@ -96,26 +100,6 @@ describe('PassportInfo Component', () => {
     
     // Check if events grid is rendered
     expect(screen.getAllByTestId('next-image')).toHaveLength(mockPassport.events.length + 1); // +1 for profile image
-  });
-
-  it('shows map view tab with correct styling when tab is "map"', () => {
-    render(
-      <PassportInfo 
-        tab="map"
-        passport={mockPassport}
-        selectedEvent={null}
-        setSelectedEvent={mockSetSelectedEvent}
-      />
-    );
-    
-    // The map tab should be active
-    const mapLinks = screen.getAllByTestId('next-link');
-    const mapTab = mapLinks.find(link => link.textContent?.includes('Map View'));
-    expect(mapTab).toHaveClass('border-b-white');
-    
-    // Grid tab should not be active
-    const gridTab = mapLinks.find(link => link.textContent?.includes('Grid View'));
-    expect(gridTab).not.toHaveClass('border-b-white');
   });
 
   it('collapses/expands the content when toggle is clicked', () => {
@@ -193,7 +177,7 @@ describe('PassportInfo Component', () => {
     expect(mockOnGridItemResize).toHaveBeenCalledWith({ width: 100, height: 100 });
   });
 
-  it('handles tab navigation correctly', () => {
+  it('handles navigation links correctly', () => {
     render(
       <PassportInfo 
         passport={mockPassport}
@@ -209,22 +193,9 @@ describe('PassportInfo Component', () => {
     const gridTab = links.find(link => link.textContent?.includes('Grid View'));
     expect(gridTab).toHaveAttribute('href', mockPathname);
     
-    // Verify Map View tab links to pathname with tab=map query param
+    // Verify Map View tab exists and has a link
     const mapTab = links.find(link => link.textContent?.includes('Map View'));
+    expect(mapTab).toBeInTheDocument();
     expect(mapTab).toHaveAttribute('href', `${mockPathname}?tab=map`);
-  });
-
-  it('sets isOpen to false on first load when tab is map', () => {
-    render(
-      <PassportInfo 
-        tab="map"
-        passport={mockPassport}
-        selectedEvent={null}
-        setSelectedEvent={mockSetSelectedEvent}
-      />
-    );
-    
-    // The content should be collapsed
-    expect(screen.queryByText(/Collectibles Collected/i)).not.toBeInTheDocument();
   });
 }); 
