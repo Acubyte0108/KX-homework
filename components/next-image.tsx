@@ -24,4 +24,4 @@ export function NextImage({
       onError={() => setImgSrc(fallbackSrc)}
     />
   );
-} 
+}

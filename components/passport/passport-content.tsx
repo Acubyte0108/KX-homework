@@ -115,15 +115,17 @@ export function PassportContent({ passport }: PassportMapProps) {
             <div
               className={cn(
                 "bg-coral-blue text-white p-4 pt-20 pointer-events-auto",
-                isDesktop && "md:max-w-[450px] sm:w-3/10 overflow-auto flex flex-col gap-10",
+                isDesktop &&
+                  "md:max-w-[450px] sm:w-3/10 overflow-auto flex flex-col gap-10",
                 !isDesktop && tab === "map"
                   ? "absolute top-0 left-0 right-0 pb-10 rounded-b-lg z-10 bg-transparent"
                   : "w-full h-full flex flex-col gap-10"
               )}
-              style={{ 
-                backgroundImage: !isDesktop && tab === "map" 
-                  ? getThemeGradient("#00294D", "bottom") 
-                  : "none" 
+              style={{
+                backgroundImage:
+                  !isDesktop && tab === "map"
+                    ? getThemeGradient("#00294D", "bottom")
+                    : "none",
               }}
             >
               <PassportInfo

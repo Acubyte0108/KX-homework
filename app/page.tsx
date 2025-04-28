@@ -4,10 +4,6 @@ import { notFound } from "next/navigation";
 async function getPassportData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
-    // Add a fake delay
-    // await new Promise((resolve) => setTimeout(resolve, 2500));
-
     const response = await fetch(`${baseUrl}/passport.json`, {
       next: {
         revalidate: 60,

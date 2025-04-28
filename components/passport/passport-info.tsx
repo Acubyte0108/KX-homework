@@ -1,6 +1,9 @@
 "use client";
 
-import { PassportData, PassportEvent } from "@/components/passport/passport-content";
+import {
+  PassportData,
+  PassportEvent,
+} from "@/components/passport/passport-content";
 import { ChevronsUpDown, ChevronsDownUp, Grid, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
