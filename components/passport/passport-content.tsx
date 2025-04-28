@@ -90,7 +90,7 @@ export function PassportContent({ passport }: PassportMapProps) {
   return (
     <>
       <div className="flex flex-col h-full relative">
-        <div className="absolute w-full h-full">
+        <div className="absolute w-full h-full pointer-events-auto">
           {(isDesktop || (!isDesktop && tab === "map")) && defaultPosition && (
             <MapWithNoSSR
               defaultPosition={defaultPosition}
