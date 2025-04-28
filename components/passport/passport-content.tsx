@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import dynamic from "next/dynamic";
 import { cn, getThemeGradient } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { PassportInfo } from "@/components/passport/passport-info";
 import { EventInfo } from "@/components/passport/event-info";
 import { EventInfoDrawer } from "@/components/passport/event-info-drawer";
@@ -46,6 +46,7 @@ export function PassportContent({ passport }: PassportMapProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const tab = searchParams.get("tab");
 
   const [defaultPosition, setDefaultPosition] = useState<
@@ -74,11 +75,11 @@ export function PassportContent({ passport }: PassportMapProps) {
   useEffect(() => {
     if (isDesktop !== wasDesktop) {
       if (isDesktop || (!isDesktop && tab !== "map")) {
-        router.replace("/", { scroll: false });
+        router.replace(pathname, { scroll: false });
       }
       setWasDesktop(isDesktop);
     } else if (isDesktop && tab === "map") {
-      router.replace("/");
+      router.replace(pathname);
     }
   }, [isDesktop, wasDesktop, router, tab]);
 
