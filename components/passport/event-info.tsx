@@ -85,7 +85,7 @@ export function EventInfo({
           >
             <AccordionItem value="mini-map-info">
               <AccordionTrigger
-                className="px-4 text-lg font-medium hover:no-underline flex items-center"
+                className="px-4 text-lg font-semibold hover:no-underline flex items-center"
                 iconClassName="text-white size-8"
               >
                 How to collect this collectible
@@ -96,10 +96,12 @@ export function EventInfo({
                     <LockKeyhole size={16} />
                   </div>
                   <div>
-                    <h3 className="font-medium">How to collect</h3>
-                    <p className="text-sm text-slate-300">
-                      Visit this location within 50 meters of the marker to
-                      collect this badge.
+                    <h3 className="font-semibold text-lg mb-2">
+                      How to collect
+                    </h3>
+                    <p className="text-sm font-medium">
+                      เปิดการเข้าถึงโลเคชั่น เจอแล้วกดเก็บของสะสมได้เลยในระยะ 50
+                      เมตร *อย่าลืมระวังรถขณะร่วมสนุก
                     </p>
                   </div>
                 </div>
@@ -122,7 +124,7 @@ export function EventInfo({
           >
             <AccordionItem value="preview">
               <AccordionTrigger
-                className="px-4 text-lg font-medium hover:no-underline flex items-center"
+                className="px-4 text-lg font-semibold hover:no-underline flex items-center"
                 iconClassName="text-white size-8"
               >
                 Collectible Preview
