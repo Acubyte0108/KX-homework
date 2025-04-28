@@ -5,7 +5,6 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import React from "react";
 
-// Mock the necessary hooks and components
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(() => ({
@@ -18,11 +17,9 @@ vi.mock("@/hooks/useMediaQuery", () => ({
   useMediaQuery: vi.fn(),
 }));
 
-// Mock dynamic import
 vi.mock("next/dynamic", () => ({
   __esModule: true,
   default: () => {
-    // Mock the dynamically imported component with a simple React component
     const DynamicComponent = () => (
       <div data-testid="map-component">Map Component (mocked)</div>
     );
@@ -41,7 +38,6 @@ vi.mock("@/components/passport/map", () => {
 
 vi.mock("@/components/passport/passport-info", () => ({
   PassportInfo: (props: any) => {
-    // Call the setSelectedEvent prop when interacted with
     const handleSelectEvent = () => {
       if (props.setSelectedEvent) {
         props.setSelectedEvent(props.passport?.events[0]);
@@ -84,7 +80,6 @@ vi.mock("@/components/next-image", () => ({
   ),
 }));
 
-// Sample passport data
 const mockPassport = {
   name: "Test Passport",
   description: "This is a test passport",
@@ -157,7 +152,6 @@ describe("PassportContent Component", () => {
 
     render(<PassportContent passport={mockPassport} />);
 
-    // The map component should be rendered with default position
     expect(screen.getByTestId("map-component")).toBeInTheDocument();
   });
 
@@ -170,12 +164,10 @@ describe("PassportContent Component", () => {
 
     const { rerender } = render(<PassportContent passport={mockPassport} />);
 
-    // Change to desktop
     isDesktopValue = true;
     (useMediaQuery as any).mockImplementation(() => isDesktopValue);
     rerender(<PassportContent passport={mockPassport} />);
 
-    // Should redirect to pathname instead of hardcoded '/'
     expect(mockRouter.replace).toHaveBeenCalledWith(mockPathname, {
       scroll: false,
     });
@@ -189,7 +181,6 @@ describe("PassportContent Component", () => {
 
     render(<PassportContent passport={mockPassport} />);
 
-    // Should redirect to pathname instead of hardcoded '/'
     expect(mockRouter.replace).toHaveBeenCalledWith(mockPathname);
   });
 
@@ -198,10 +189,7 @@ describe("PassportContent Component", () => {
 
     render(<PassportContent passport={mockPassport} />);
 
-    // Trigger event selection by clicking the passport info component
     fireEvent.click(screen.getByTestId("passport-info"));
-
-    // Now the EventInfo component should be rendered
     expect(screen.getByTestId("event-info")).toBeInTheDocument();
   });
 
@@ -210,10 +198,7 @@ describe("PassportContent Component", () => {
 
     render(<PassportContent passport={mockPassport} />);
 
-    // Trigger event selection by clicking the passport info component
     fireEvent.click(screen.getByTestId("passport-info"));
-
-    // Now the EventInfoDrawer component should be rendered
     expect(screen.getByTestId("event-info-drawer")).toBeInTheDocument();
   });
 });

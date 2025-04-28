@@ -3,14 +3,12 @@ import { render, screen, fireEvent } from "../../utils";
 import { EventInfoDrawer } from "@/components/passport/event-info-drawer";
 import { PassportEvent } from "@/components/passport/passport-content";
 
-// Mock the NextImage component
 vi.mock("@/components/next-image", () => ({
   NextImage: ({ src, alt }: { src: string; alt: string }) => (
     <img data-testid="next-image" src={src} alt={alt} />
   ),
 }));
 
-// Mock the Button component
 vi.mock("@/components/ui/button", () => ({
   Button: ({
     children,
@@ -30,7 +28,6 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }));
 
-// Mock the Drawer component
 vi.mock("@/components/ui/drawer", () => ({
   Drawer: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
     open ? <div data-testid="drawer">{children}</div> : null,
@@ -42,7 +39,6 @@ vi.mock("@/components/ui/drawer", () => ({
   ),
 }));
 
-// Mock the X icon from Lucide
 vi.mock("lucide-react", () => ({
   X: () => <div data-testid="x-icon">X Icon</div>,
 }));
@@ -113,7 +109,6 @@ describe("EventInfoDrawer Component", () => {
       />
     );
 
-    // Check if there's an element with the specified dimensions
     const imageContainer = screen.getByTestId("next-image").parentElement;
     expect(imageContainer).toHaveStyle({ width: "100px", height: "100px" });
   });

@@ -1,10 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "../../utils";
 
-// Mock the leaflet CSS import
 vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
-// Import the component after setting up mocks
 import MiniMap from "@/components/passport/mini-map";
 
 describe("MiniMap Component", () => {
@@ -14,13 +12,8 @@ describe("MiniMap Component", () => {
   it("renders correctly with default position", () => {
     render(<MiniMap defaultPosition={defaultPosition} />);
 
-    // Check if map container is rendered
     expect(screen.getByTestId("map-container")).toBeInTheDocument();
-
-    // Check if tile layer is rendered
     expect(screen.getByTestId("tile-layer")).toBeInTheDocument();
-
-    // No marker should be rendered without a selectedPosition
     expect(screen.queryByTestId("map-marker")).not.toBeInTheDocument();
   });
 
@@ -32,13 +25,8 @@ describe("MiniMap Component", () => {
       />
     );
 
-    // Check if map container is rendered
     expect(screen.getByTestId("map-container")).toBeInTheDocument();
-
-    // Check if tile layer is rendered
     expect(screen.getByTestId("tile-layer")).toBeInTheDocument();
-
-    // A marker should be rendered with a selectedPosition
     expect(screen.getByTestId("map-marker")).toBeInTheDocument();
   });
 

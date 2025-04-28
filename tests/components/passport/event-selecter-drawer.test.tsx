@@ -3,38 +3,24 @@ import { render, screen, fireEvent } from "../../utils";
 import { EventSelecterDrawer } from "@/components/passport/event-selecter-drawer";
 import { PassportData } from "@/components/passport/passport-content";
 
-// Mock the NextImage component
 vi.mock("@/components/next-image", () => ({
   NextImage: ({ src, alt }: { src: string; alt: string }) => (
     <img data-testid="next-image" src={src} alt={alt} />
   ),
 }));
 
-// Mock the Drawer component
 vi.mock("@/components/ui/drawer", () => ({
   Drawer: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
     open ? <div data-testid="drawer">{children}</div> : null,
-  DrawerContent: ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div data-testid="drawer-content">{children}</div>,
-  DrawerHeader: ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div data-testid="drawer-header">{children}</div>,
-  DrawerTitle: ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div data-testid="drawer-title">{children}</div>,
+  DrawerContent: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="drawer-content">{children}</div>
+  ),
+  DrawerHeader: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="drawer-header">{children}</div>
+  ),
+  DrawerTitle: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="drawer-title">{children}</div>
+  ),
 }));
 
 describe("EventSelecterDrawer Component", () => {
@@ -93,12 +79,10 @@ describe("EventSelecterDrawer Component", () => {
     expect(screen.getByTestId("drawer-header")).toBeInTheDocument();
     expect(screen.getByTestId("drawer-title")).toBeInTheDocument();
 
-    // Check the instructional text
     expect(
       screen.getByText(/Tab the slot or location pin to information/i)
     ).toBeInTheDocument();
 
-    // Check that all events are rendered
     const eventImages = screen.getAllByTestId("next-image");
     expect(eventImages).toHaveLength(mockPassport.events.length);
   });
@@ -112,16 +96,12 @@ describe("EventSelecterDrawer Component", () => {
       />
     );
 
-    // Find all event images and click the first one
     const eventImages = screen.getAllByTestId("next-image");
     fireEvent.click(eventImages[0]);
-
-    // Expect setSelectedEvent to be called with the first event
     expect(mockSetSelectedEvent).toHaveBeenCalledWith(mockPassport.events[0]);
   });
 
   it("handles null passport gracefully", () => {
-    // This should not throw any errors
     render(
       <EventSelecterDrawer
         open={true}
@@ -130,7 +110,6 @@ describe("EventSelecterDrawer Component", () => {
       />
     );
 
-    // Just verify the drawer renders
     expect(screen.getByTestId("drawer")).toBeInTheDocument();
   });
 });

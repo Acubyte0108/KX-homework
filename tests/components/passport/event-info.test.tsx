@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "../../utils";
 import { EventInfo } from "@/components/passport/event-info";
 import React from "react";
 
-// Mock the dynamic import for MiniMap
 vi.mock("next/dynamic", () => ({
   __esModule: true,
   default: () => {
@@ -14,22 +13,14 @@ vi.mock("next/dynamic", () => ({
   },
 }));
 
-// Mock the NextImage component
 vi.mock("@/components/next-image", () => ({
   NextImage: ({ src, alt }: { src: string; alt: string }) => (
     <img data-testid="next-image" src={src} alt={alt} />
   ),
 }));
 
-// Mock the Accordion component
 vi.mock("@/components/ui/accordion", () => ({
-  Accordion: ({
-    children,
-    type,
-    collapsible,
-    defaultValue,
-    className,
-  }: any) => (
+  Accordion: ({ children, className }: any) => (
     <div data-testid="accordion" className={className}>
       {children}
     </div>
@@ -51,7 +42,6 @@ vi.mock("@/components/ui/accordion", () => ({
   ),
 }));
 
-// Mock the Button component
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, className, variant, size }: any) => (
     <button
@@ -66,7 +56,6 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }));
 
-// Mock data
 const mockEvent = {
   id: "event-1",
   image_url: "/event1.jpg",
@@ -96,13 +85,9 @@ describe("EventInfo Component", () => {
       />
     );
 
-    // Check if event ID is displayed in the title
     expect(screen.getByText(/event-1/)).toBeInTheDocument();
-
-    // Check if partner name is displayed
     expect(screen.getByText(mockPartner.display_name)).toBeInTheDocument();
 
-    // Check if image is displayed
     const eventImage = screen.getAllByTestId("next-image")[0];
     expect(eventImage).toBeInTheDocument();
     expect(eventImage).toHaveAttribute("src", mockEvent.image_url);
@@ -121,7 +106,6 @@ describe("EventInfo Component", () => {
       />
     );
 
-    // Find close button and click it
     const buttons = screen.getAllByTestId("button");
     const closeButton = buttons.find((btn) =>
       btn.className?.includes("absolute")
@@ -148,7 +132,6 @@ describe("EventInfo Component", () => {
       />
     );
 
-    // Check if the Collect Now button is rendered
     expect(screen.getByText("Collect Now")).toBeInTheDocument();
   });
 
@@ -165,7 +148,6 @@ describe("EventInfo Component", () => {
       />
     );
 
-    // Check if accordion sections are rendered
     expect(
       screen.getByText("How to collect this collectible")
     ).toBeInTheDocument();

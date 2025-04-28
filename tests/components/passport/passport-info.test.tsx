@@ -3,12 +3,10 @@ import { render, screen, fireEvent } from "../../utils";
 import { PassportInfo } from "@/components/passport/passport-info";
 import { usePathname } from "next/navigation";
 
-// Mock next/navigation
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(() => "/test-path"),
 }));
 
-// Mock usehooks-ts
 vi.mock("usehooks-ts", () => ({
   useResizeObserver: vi.fn(() => ({
     width: 100,
@@ -16,7 +14,6 @@ vi.mock("usehooks-ts", () => ({
   })),
 }));
 
-// Mock data
 const mockPassport = {
   name: "Test Passport",
   description: "This is a test passport",
@@ -44,14 +41,12 @@ const mockPassport = {
   },
 };
 
-// Mock the NextImage component
 vi.mock("@/components/next-image", () => ({
   NextImage: ({ src, alt }: { src: string; alt: string }) => (
     <img data-testid="next-image" src={src} alt={alt} />
   ),
 }));
 
-// Mock the Lucide icons
 vi.mock("lucide-react", () => ({
   ChevronsUpDown: () => <div data-testid="chevrons-up-down">ChevronUpDown</div>,
   ChevronsDownUp: () => <div data-testid="chevrons-down-up">ChevronDownUp</div>,
@@ -59,7 +54,6 @@ vi.mock("lucide-react", () => ({
   MapPin: () => <div data-testid="map-pin">MapPin</div>,
 }));
 
-// Mock Link component
 vi.mock("next/link", () => ({
   __esModule: true,
   default: ({
@@ -99,13 +93,8 @@ describe("PassportInfo Component", () => {
       />
     );
 
-    // Check partner name is rendered
     expect(screen.getByText("Test Partner")).toBeInTheDocument();
-
-    // Check if the passport description is rendered
     expect(screen.getByText(/Collectibles Collected/i)).toBeInTheDocument();
-
-    // Check if events grid is rendered
     expect(screen.getAllByTestId("next-image")).toHaveLength(
       mockPassport.events.length + 1
     ); // +1 for profile image
@@ -120,15 +109,12 @@ describe("PassportInfo Component", () => {
       />
     );
 
-    // Content is initially expanded
     expect(screen.getByText(/Collectibles Collected/i)).toBeInTheDocument();
 
-    // Click the toggle button - now using data-testid to find the containing button
     const toggleIcon = screen.getByTestId("chevrons-down-up");
     const toggleButton = toggleIcon.closest("button");
     fireEvent.click(toggleButton!);
 
-    // Content should be collapsed
     expect(
       screen.queryByText(/Collectibles Collected/i)
     ).not.toBeInTheDocument();
@@ -143,12 +129,10 @@ describe("PassportInfo Component", () => {
       />
     );
 
-    // Find the first event item and click it (need to find the container since it has the click handler)
     const eventImages = screen.getAllByTestId("next-image").slice(1); // Skip profile image
     const eventContainer = eventImages[0].closest("div");
     fireEvent.click(eventContainer!);
 
-    // The setSelectedEvent should be called with the first event
     expect(mockSetSelectedEvent).toHaveBeenCalledWith(mockPassport.events[0]);
   });
 
@@ -160,16 +144,11 @@ describe("PassportInfo Component", () => {
         setSelectedEvent={mockSetSelectedEvent}
       />
     );
-
-    // Find the event items
     const eventImages = screen.getAllByTestId("next-image").slice(1); // Skip profile image
     const eventContainers = eventImages.map((img) => img.closest("div"));
 
-    // The first event should have the selected styling
     expect(eventContainers[0]).toHaveClass("ring-2");
     expect(eventContainers[0]).toHaveClass("ring-white");
-
-    // Other events should not have selected styling
     expect(eventContainers[1]).not.toHaveClass("ring-2");
   });
 
