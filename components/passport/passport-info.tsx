@@ -109,11 +109,13 @@ export function PassportInfo({
                 {passport?.description}
               </p>
 
-              <div className="text-4xl text-emerald-400 my-2">
-                {activeEventCount}
-              </div>
-              <div className="text-sm text-gray-300">
-                Collectibles Collected
+              <div className="flex items-center gap-4">
+                <div className="text-4xl font-bold text-emerald-400">
+                  {activeEventCount}
+                </div>
+                <div className="text-sm text-white">
+                  Collectibles <br /> Collected
+                </div>
               </div>
             </div>
           </CollapsibleContent>
