@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '../../utils';
 import { PassportContent, PassportEvent, PassportData, PassportPartner } from '@/components/passport/passport-content';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import React from 'react';
 
@@ -10,7 +10,8 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(() => ({
     get: vi.fn((param) => param === 'tab' ? null : null)
-  }))
+  })),
+  usePathname: vi.fn(() => '/test-path')
 }));
 
 vi.mock('@/hooks/useMediaQuery', () => ({
@@ -109,10 +110,12 @@ describe('PassportContent Component', () => {
   const mockRouter = {
     replace: vi.fn(),
   };
+  const mockPathname = '/test-path';
   
   beforeEach(() => {
     vi.clearAllMocks();
     (useRouter as any).mockReturnValue(mockRouter);
+    (usePathname as any).mockReturnValue(mockPathname);
   });
   
   it('renders null when passport is null', () => {
@@ -152,7 +155,7 @@ describe('PassportContent Component', () => {
     expect(screen.getByTestId('map-component')).toBeInTheDocument();
   });
   
-  it('redirects to home when changing from mobile to desktop with map tab', () => {
+  it('redirects to pathname when changing from mobile to desktop with map tab', () => {
     let isDesktopValue = false;
     (useMediaQuery as any).mockImplementation(() => isDesktopValue);
     (useSearchParams as any).mockReturnValue({
@@ -166,11 +169,11 @@ describe('PassportContent Component', () => {
     (useMediaQuery as any).mockImplementation(() => isDesktopValue);
     rerender(<PassportContent passport={mockPassport} />);
     
-    // Should redirect to home
-    expect(mockRouter.replace).toHaveBeenCalledWith('/', { scroll: false });
+    // Should redirect to pathname instead of hardcoded '/'
+    expect(mockRouter.replace).toHaveBeenCalledWith(mockPathname, { scroll: false });
   });
   
-  it('redirects to home when on desktop with map tab', () => {
+  it('redirects to pathname when on desktop with map tab', () => {
     (useMediaQuery as any).mockReturnValue(true); // Desktop view
     (useSearchParams as any).mockReturnValue({
       get: (param: string) => param === 'tab' ? 'map' : null
@@ -178,8 +181,8 @@ describe('PassportContent Component', () => {
     
     render(<PassportContent passport={mockPassport} />);
     
-    // Should redirect to home
-    expect(mockRouter.replace).toHaveBeenCalledWith('/');
+    // Should redirect to pathname instead of hardcoded '/'
+    expect(mockRouter.replace).toHaveBeenCalledWith(mockPathname);
   });
   
   it('shows EventInfo when event is selected on desktop', () => {
