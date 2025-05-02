@@ -43,7 +43,7 @@ export function PassportContent({ passport }: PassportMapProps) {
   const [selectedEvent, setSelectedEvent] = useState<PassportEvent | null>(
     null
   );
-  const isDesktop = useMediaQuery("(min-width: 640px)");
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
